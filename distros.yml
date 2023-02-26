@@ -1,124 +1,178 @@
 rounds:
-  - number: 24
-    name: Current RAI Incentives
-    snapshotDate: 2023-04-15T12:50Z
+  - number: 0
+    name: Current TAI Incentives
+    #snapshotDate: 2023-04-15T12:50Z
     # distributionDate: 2021-11-17T12:50Z
     distros:
       - until: Ongoing
-        amount: 10 FLX/day
-        name: Uniswap V3 RAI/DAI LP + Minter
+        amount:  RATE/day
+        name: ETH-A TAI Minter
+        image: "{{TAI_ICON}}" 
+        description: Mint TAI w/ ETH-A Safe
+        link: https://goerli-app.tai.money
+        apy: "{{ETH_A_MINT_APR}}%"
+        apy_title: "ETH-A RATE APR"
+        apy_description: "Assumes 2x ETH-A liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
+
+      - until: Ongoing
+        amount:  RATE/day
+        name: ETH-B TAI Minter
+        image: "{{TAI_ICON}}" 
+        description: Mint TAI w/ ETH-B Safe
+        link: https://goerli-app.tai.money
+        apy: "{{ETH_B_MINT_APR}}%"
+        apy_title: "ETH-B RATE APR"
+        apy_description: "Assumes 2x ETH-B liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
+
+
+      - until: Ongoing
+        amount:  RATE/day
+        name: ETH-C TAI Minter
+        image: "{{TAI_ICON}}" 
+        description: Mint TAI w/ ETH-C Safe
+        link: https://goerli-app.tai.money
+        apy: "{{ETH_C_MINT_APR}}%"
+        apy_title: "ETH-C RATE APR"
+        apy_description: "Assumes 2x ETH-C liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
+
+
+      - until: Ongoing
+        amount:  RATE/day
+        name: WSTETH-A TAI Minter
+        image: "{{TAI_ICON}}" 
+        description: Mint TAI w/ WSTETH-A Safe
+        link: https://goerli-app.tai.money
+        apy: "{{WSTETH_A_MINT_APR}}%"
+        apy_title: "WSTETH-A RATE APR"
+        apy_description: "Assumes 2x WSTETH-A liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
+
+
+      - until: Ongoing
+        amount:  RATE/day
+        name: WSTETH-B TAI Minter
+        image: "{{TAI_ICON}}" 
+        description: Mint TAI w/ WSTETH-B Safe
+        link: https://goerli-app.tai.money
+        apy: "{{WSTETH_B_MINT_APR}}%"
+        apy_title: "WSTETH-B RATE APR"
+        apy_description: "Assumes 2x WSTETH-B liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
+
+
+      - until: Ongoing
+        amount:  RATE/day
+        name: RETH-A TAI Minter
+        image: "{{TAI_ICON}}" 
+        description: Mint TAI w/ RETH-A Safe
+        link: https://goerli-app.tai.money
+        apy: "{{RETH_A_MINT_APR}}%"
+        apy_title: "RETH-A RATE APR"
+        apy_description: "Assumes 2x RETH-A liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
+
+
+      - until: Ongoing
+        amount:  RATE/day
+        name: RETH-B TAI Minter
+        image: "{{TAI_ICON}}" 
+        description: Mint TAI w/ RETH-B Safe
+        link: https://goerli-app.tai.money
+        apy: "{{RETH_B_MINT_APR}}%"
+        apy_title: "RETH-B RATE APR"
+        apy_description: "Assumes 2x RETH-B liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
+
+
+      - until: Ongoing
+        amount:  RATE/day
+        name: RAI-A TAI Minter
+        image: "{{TAI_ICON}}" 
+        description: Mint TAI w/ RAI-A Safe
+        link: https://goerli-app.tai.money
+        apy: "{{RAI_A_MINT_APR}}%"
+        apy_title: "RAI-A RATE APR"
+        apy_description: "Assumes 2x RAI-A liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
+
+
+        # LP
+
+      - until: Ongoing
+        amount: RATE/day
+        name: TAI/ETH LP from ETH-A Safe
         image: https://images.ctfassets.net/zql9qw49kkiw/gODeJOOfrFIXz5pGXkNVO/df191e8900a2e9c9c868344b874c09ea/uniswap.svg
-        description: Mint RAI and LP on at least 5 ticks at redemption price and market price in the 0.05% Uniswap v3 RAI/DAI Pool. More <a href="https://docs.reflexer.finance/incentives/rai-uniswap-v3-mint-+-lp-incentives-program" target="_blank">here</a>
-        link: https://app.uniswap.org/#/add/0x03ab458634910AaD20eF5f1C8ee96F1D6ac54919/0x6B175474E89094C44Da98b954EedeAC495271d0F/500
-        apy: "{{UNISWAP_APR}}%"
-        apy_title: "FLX APR"
-        apy_description: "{{UNISWAP_APR_DESC}}"
-        optional:
-          Current state: "RAI redemption price: {{UNISWAP_V3_RAI_REDEMPTION_PRICE}}, RAI market price:  {{UNISWAP_V3_RAI_MARKET_PRICE}}"
-          Optimal range: "{{UNISWAP_V3_OPTIMAL}}"
-          Recommended range: "{{UNISWAP_V3_RECOMMENDED}}"
+        description: LP in the TAI/ETH Pool.
+        link: LP Link
+        apy: "{{ETH_A_LP_APR}}%"
+        apy_title: "RATE APR"
+        apy_description: "Assumes 2x ETH-A liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
 
       - until: Ongoing
-        amount: 30 FLX/day
-        name: Uniswap V2 RAI/ETH LP
+        amount: RATE/day
+        name: TAI/ETH LP from ETH-B Safe
         image: https://images.ctfassets.net/zql9qw49kkiw/gODeJOOfrFIXz5pGXkNVO/df191e8900a2e9c9c868344b874c09ea/uniswap.svg
-        description: LP in the Uniswap v2 RAI/ETH Pool. More <a href="https://docs.reflexer.finance/incentives/rai-mint-+-lp-incentives-program" target="_blank">here</a>
-        link: https://app.uniswap.org/#/add/v2/0x03ab458634910aad20ef5f1c8ee96f1d6ac54919/ETH
-        apy: "{{UNI_V2_ETH_RAI_APR}}%"
-        apy_title: "FLX APR"
-        apy_description: "Not including Uniswap fees revenue."
-        optional:
-          Pool size: ${{UNI_V2_ETH_RAI_POOL_SIZE}}
-
-      # - until: Ongoing
-      #   amount: 87.5 FLX/day
-      #   name: FLX/ETH Uniswap v2 stakers
-      #   image: https://app.reflexer.finance/static/media/stFLX.f0676c46.svg
-      #   description: Uniswap v2 FLX/ETH LP stakers. More <a href="https://docs.reflexer.finance/incentives/flx-staking" target="_blank">here</a>
-      #   link: https://app.reflexer.finance/#/earn/staking
-      #   apy: "{{FLX_STAKING_APR}}%"
-      #   apy_title: "FLX APR"
-      #   apy_description: "FLX APR only, does not include fee revenue and potential impermanent loss."
-      #   optional:
-      #     Pool size: ${{FLX_STAKING_POOL_SIZE}}
-
-      # - until: Ongoing
-      #   amount: 20 FLX/day
-      #   name: Curve Finance
-      #   image: https://images.ctfassets.net/zql9qw49kkiw/2Blf7JTMfHaPK5RBGrTxl1/e2a59ed15d33012d1f7ca897129eef04/curve-logo.png?h=250
-      #   description: RAI LPs on curve, direct holders of the RAI-3CRV LP token only (Convex unsupported).
-      #   link: https://curve.fi/rai/deposit
+        description: LP in the TAI/ETH Pool.
+        link: LP Link
+        apy: "{{ETH_B_LP_APR}}%"
+        apy_title: "RATE APR"
+        apy_description: "Assumes 2x ETH-B liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
 
       - until: Ongoing
-        amount: Variable CRV & CVX rewards
-        name: Convex Finance
-        image: https://images.ctfassets.net/zql9qw49kkiw/U58XiobjLN7V8S57JZNUz/9e317996f097bb0c1006fb932be16cfa/convex.png
-        description: RAI LP on Convex or Curve. More <a href="https://docs.convexfinance.com/convexfinance/guides/depositing/curve-lp-tokens" target="_blank">here</a>
-        link: https://www.convexfinance.com/stake
-        # apy: "{{UNISWAP_APR}}%"
-        # apy_title: "CRV+CVX APR"
-        # apy_description: "Current APR from Convex, includes base pool APR, CRV APR, CVX APR and substract Convex admin fees"
+        amount: RATE/day
+        name: TAI/ETH LP from ETH-C Safe
+        image: https://images.ctfassets.net/zql9qw49kkiw/gODeJOOfrFIXz5pGXkNVO/df191e8900a2e9c9c868344b874c09ea/uniswap.svg
+        description: LP in the TAI/ETH Pool.
+        link: LP Link
+        apy: "{{ETH_C_LP_APR}}%"
+        apy_title: "RATE APR"
+        apy_description: "Assumes 2x ETH-C liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
 
-
-
-
-      # - until: Ongoing
-      #   amount: 10 FLX/day
-      #   name: Aave
-      #   image: https://images.ctfassets.net/zql9qw49kkiw/6nP27R0M7Nl3LPaBMMNC08/954b4692406149d6277035c1088eda0d/aave-aave-logo.png
-      #   description: RAI borrowers on Aave v2
-      #   link: https://app.aave.com/reserve-overview/?underlyingAsset=0x03ab458634910aad20ef5f1c8ee96f1d6ac54919&marketName=proto_mainnet
-      #   apy: "{{AAVE_FLX_APR}}%"
-      #   apy_title: "FLX APR"  
-      #   apy_description: "Assuming 65% LTV, not including borrow APY"
-      #   optional:
-      #     Total RAI borrows: "${{AAVE_RAI_POOL_SIZE}}"
-      #     RAI supply APY: "{{AAVE_RAI_SUPPLY_APY}}%"
-      #     RAI borrow APY: "{{AAVE_RAI_BORROW_APY}}%"
-      
       - until: Ongoing
-        amount: Variable POLLY rewards
-        name: Polly Finance 
-        image: "https://images.ctfassets.net/zql9qw49kkiw/66lq8ZZ0EysBYRLB2wR0V3/4dbe7bd3301a1f8b5d1a56c55811e6f2/logo.ea3bdc41.svg"
-        description: RAI farms on Polly Finance. More info <a href="https://docs.bao.finance/franchises/polly/contracts-and-key-info#tokens" target="_blank">here</a>.
-        link: https://pollyfinance.com/farms?ref=null
-      
-      - until: Ongoing
-        amount:  Variable MPH rewards 
-        name: 88mph 
-        image: "https://images.ctfassets.net/zql9qw49kkiw/1jFpRuZGHZ1lrQnVOwPzaU/452c0d22d1673e2a89c6711d629eca09/88-logo.jpg"
-        description: RAI depositors on 88mph fix yield lending.
-        link: https://88mph.app/earn
+        amount: RATE/day
+        name: TAI/ETH LP from WSTETH-A Safe
+        image: https://images.ctfassets.net/zql9qw49kkiw/gODeJOOfrFIXz5pGXkNVO/df191e8900a2e9c9c868344b874c09ea/uniswap.svg
+        description: LP in the TAI/ETH Pool.
+        link: LP Link
+        apy: "{{WSTETH_A_LP_APR}}%"
+        apy_title: "RATE APR"
+        apy_description: "Assumes 2x WSTETH-A liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
 
-        
-uniV3PoolConfig:
-    - pair: "RAI/DAI"
-      ranges:
-        wide:
-          upperTick: 11040
-          lowerTick: 10980
-          apr: "{{R2_UNISWAP_APR_NO_DETAIL}}"
-        tight:
-          upperTick: 11020
-          lowerTick: 11000
-          apr: "{{R3_UNISWAP_APR_NO_DETAIL}}"
-      token0: "0x03ab458634910AaD20eF5f1C8ee96F1D6ac54919"
-      token1: "0x6B175474E89094C44Da98b954EedeAC495271d0F"
-      fee: 500
-    - pair: "RAI/ETH"
-      ranges:
-        wide:
-          upperTick: -69160
-          lowerTick: -69640
-          apr: "{{R2_UNISWAP_APR_NO_DETAIL}}"
-        tight:
-          upperTick: -68680
-          lowerTick: -70120
-          apr: "{{R3_UNISWAP_APR_NO_DETAIL}}"
-      token0: "0x03ab458634910AaD20eF5f1C8ee96F1D6ac54919"
-      token1: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
-      fee: 3000
-  
+      - until: Ongoing
+        amount: RATE/day
+        name: TAI/ETH LP from WSTETH-B Safe
+        image: https://images.ctfassets.net/zql9qw49kkiw/gODeJOOfrFIXz5pGXkNVO/df191e8900a2e9c9c868344b874c09ea/uniswap.svg
+        description: LP in the TAI/ETH Pool.
+        link: LP Link
+        apy: "{{WSTETH_B_LP_APR}}%"
+        apy_title: "RATE APR"
+        apy_description: "Assumes 2x WSTETH-B liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
+
+      - until: Ongoing
+        amount: RATE/day
+        name: TAI/ETH LP from RETH-A Safe
+        image: https://images.ctfassets.net/zql9qw49kkiw/gODeJOOfrFIXz5pGXkNVO/df191e8900a2e9c9c868344b874c09ea/uniswap.svg
+        description: LP in the TAI/ETH Pool.
+        link: LP Link
+        apy: "{{RETH_A_LP_APR}}%"
+        apy_title: "RATE APR"
+        apy_description: "Assumes 2x RETH-A liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
+
+      - until: Ongoing
+        amount: RATE/day
+        name: TAI/ETH LP from RETH-B Safe
+        image: https://images.ctfassets.net/zql9qw49kkiw/gODeJOOfrFIXz5pGXkNVO/df191e8900a2e9c9c868344b874c09ea/uniswap.svg
+        description: LP in the TAI/ETH Pool.
+        link: LP Link
+        apy: "{{RETH_B_LP_APR}}%"
+        apy_title: "RATE APR"
+        apy_description: "Assumes 2x RETH-B liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
+
+      - until: Ongoing
+        amount: RATE/day
+        name: TAI/ETH LP from RAI-A Safe
+        image: https://images.ctfassets.net/zql9qw49kkiw/gODeJOOfrFIXz5pGXkNVO/df191e8900a2e9c9c868344b874c09ea/uniswap.svg
+        description: LP in the TAI/ETH Pool.
+        link: LP Link
+        apy: "{{RAI_A_LP_APR}}%"
+        apy_title: "RATE APR"
+        apy_description: "Assumes 2x RAI-A liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
+
 
   # Other rounds...
   # - number: 3
