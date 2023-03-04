@@ -5,173 +5,166 @@ rounds:
     # distributionDate: 2021-11-17T12:50Z
     distros:
       - until: Ongoing
-        amount:  RATE/day
+        amount: "{{ETH_A_MINT_RATE_PER_DAY}} RATE/day"
         name: ETH-A TAI Minter
         image: "{{TAI_ICON}}" 
-        description: Mint TAI w/ ETH-A Safe
+        description: Mint TAI from ETH-A Safe
         link: https://goerli-app.tai.money
         apy: "{{ETH_A_MINT_APR}}%"
         apy_title: "ETH-A RATE APR"
-        apy_description: "Assumes 2x ETH-A liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
+        apy_description: "Assumes c-ratio of {{ETH_A_CRATIO}}% for APR calculation."
 
       - until: Ongoing
-        amount:  RATE/day
+        amount: "{{ETH_B_MINT_RATE_PER_DAY}} RATE/day"
         name: ETH-B TAI Minter
         image: "{{TAI_ICON}}" 
-        description: Mint TAI w/ ETH-B Safe
+        description: Mint TAI from ETH-B Safe
         link: https://goerli-app.tai.money
         apy: "{{ETH_B_MINT_APR}}%"
         apy_title: "ETH-B RATE APR"
-        apy_description: "Assumes 2x ETH-B liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
-
+        apy_description: "Assumes c-ratio of {{ETH_B_CRATIO}}% for APR calculation."
 
       - until: Ongoing
-        amount:  RATE/day
+        amount: "{{ETH_C_MINT_RATE_PER_DAY}} RATE/day"
         name: ETH-C TAI Minter
         image: "{{TAI_ICON}}" 
-        description: Mint TAI w/ ETH-C Safe
+        description: Mint TAI from ETH-C Safe
         link: https://goerli-app.tai.money
         apy: "{{ETH_C_MINT_APR}}%"
         apy_title: "ETH-C RATE APR"
-        apy_description: "Assumes 2x ETH-C liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
-
+        apy_description: "Assumes c-ratio of {{ETH_C_CRATIO}}% for APR calculation."
 
       - until: Ongoing
-        amount:  RATE/day
+        amount: "{{WSTETH_A_MINT_RATE_PER_DAY}} RATE/day"
         name: WSTETH-A TAI Minter
         image: "{{TAI_ICON}}" 
-        description: Mint TAI w/ WSTETH-A Safe
+        description: Mint TAI from WSTETH-A Safe
         link: https://goerli-app.tai.money
         apy: "{{WSTETH_A_MINT_APR}}%"
         apy_title: "WSTETH-A RATE APR"
-        apy_description: "Assumes 2x WSTETH-A liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
-
+        apy_description: "Assumes c-ratio of {{WSTETH_A_CRATIO}}% for APR calculation."
 
       - until: Ongoing
-        amount:  RATE/day
+        amount: "{{WSTETH_B_MINT_RATE_PER_DAY}} RATE/day"
         name: WSTETH-B TAI Minter
         image: "{{TAI_ICON}}" 
-        description: Mint TAI w/ WSTETH-B Safe
+        description: Mint TAI from WSTETH-B Safe
         link: https://goerli-app.tai.money
         apy: "{{WSTETH_B_MINT_APR}}%"
         apy_title: "WSTETH-B RATE APR"
-        apy_description: "Assumes 2x WSTETH-B liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
-
+        apy_description: "Assumes c-ratio of {{WSTETH_B_CRATIO}}% for APR calculation."
 
       - until: Ongoing
-        amount:  RATE/day
+        amount: "{{RETH_A_MINT_RATE_PER_DAY}} RATE/day"
         name: RETH-A TAI Minter
         image: "{{TAI_ICON}}" 
-        description: Mint TAI w/ RETH-A Safe
+        description: Mint TAI from RETH-A Safe
         link: https://goerli-app.tai.money
         apy: "{{RETH_A_MINT_APR}}%"
         apy_title: "RETH-A RATE APR"
-        apy_description: "Assumes 2x RETH-A liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
-
+        apy_description: "Assumes c-ratio of {{RETH_A_CRATIO}}% for APR calculation."
 
       - until: Ongoing
-        amount:  RATE/day
+        amount: "{{RETH_B_MINT_RATE_PER_DAY}} RATE/day"
         name: RETH-B TAI Minter
         image: "{{TAI_ICON}}" 
-        description: Mint TAI w/ RETH-B Safe
+        description: Mint TAI from RETH-B Safe
         link: https://goerli-app.tai.money
         apy: "{{RETH_B_MINT_APR}}%"
         apy_title: "RETH-B RATE APR"
-        apy_description: "Assumes 2x RETH-B liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
-
+        apy_description: "Assumes c-ratio of {{RETH_B_CRATIO}}% for APR calculation."
 
       - until: Ongoing
-        amount:  RATE/day
+        amount: "{{RAI_A_MINT_RATE_PER_DAY}} RATE/day"
         name: RAI-A TAI Minter
         image: "{{TAI_ICON}}" 
-        description: Mint TAI w/ RAI-A Safe
+        description: Mint TAI from RAI-A Safe
         link: https://goerli-app.tai.money
         apy: "{{RAI_A_MINT_APR}}%"
         apy_title: "RAI-A RATE APR"
-        apy_description: "Assumes 2x RAI-A liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
-
+        apy_description: "Assumes c-ratio of {{RAI_A_CRATIO}}% for APR calculation."
 
         # LP
 
       - until: Ongoing
-        amount: RATE/day
+        amount: "{{LP_PER_DAY}} RATE/day"
         name: TAI/ETH LP from ETH-A Safe
         image: https://images.ctfassets.net/zql9qw49kkiw/gODeJOOfrFIXz5pGXkNVO/df191e8900a2e9c9c868344b874c09ea/uniswap.svg
         description: LP in the TAI/ETH Pool.
         link: LP Link
         apy: "{{ETH_A_LP_APR}}%"
         apy_title: "RATE APR"
-        apy_description: "Assumes 2x ETH-A liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
+        apy_description: "Assumes c-ratio of {{ETH_A_CRATIO}}% for APR calculation."
 
       - until: Ongoing
-        amount: RATE/day
+        amount: "{{LP_PER_DAY}} RATE/day"
         name: TAI/ETH LP from ETH-B Safe
         image: https://images.ctfassets.net/zql9qw49kkiw/gODeJOOfrFIXz5pGXkNVO/df191e8900a2e9c9c868344b874c09ea/uniswap.svg
         description: LP in the TAI/ETH Pool.
         link: LP Link
         apy: "{{ETH_B_LP_APR}}%"
         apy_title: "RATE APR"
-        apy_description: "Assumes 2x ETH-B liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
+        apy_description: "Assumes c-ratio of {{ETH_B_CRATIO}}% for APR calculation."
 
       - until: Ongoing
-        amount: RATE/day
+        amount: "{{LP_PER_DAY}} RATE/day"
         name: TAI/ETH LP from ETH-C Safe
         image: https://images.ctfassets.net/zql9qw49kkiw/gODeJOOfrFIXz5pGXkNVO/df191e8900a2e9c9c868344b874c09ea/uniswap.svg
         description: LP in the TAI/ETH Pool.
         link: LP Link
         apy: "{{ETH_C_LP_APR}}%"
         apy_title: "RATE APR"
-        apy_description: "Assumes 2x ETH-C liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
+        apy_description: "Assumes c-ratio of {{ETH_C_CRATIO}}% for APR calculation."
 
       - until: Ongoing
-        amount: RATE/day
+        amount: "{{LP_PER_DAY}} RATE/day"
         name: TAI/ETH LP from WSTETH-A Safe
         image: https://images.ctfassets.net/zql9qw49kkiw/gODeJOOfrFIXz5pGXkNVO/df191e8900a2e9c9c868344b874c09ea/uniswap.svg
         description: LP in the TAI/ETH Pool.
         link: LP Link
         apy: "{{WSTETH_A_LP_APR}}%"
         apy_title: "RATE APR"
-        apy_description: "Assumes 2x WSTETH-A liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
+        apy_description: "Assumes c-ratio of {{WSTETH_A_CRATIO}}% for APR calculation."
 
       - until: Ongoing
-        amount: RATE/day
+        amount: "{{LP_PER_DAY}} RATE/day"
         name: TAI/ETH LP from WSTETH-B Safe
         image: https://images.ctfassets.net/zql9qw49kkiw/gODeJOOfrFIXz5pGXkNVO/df191e8900a2e9c9c868344b874c09ea/uniswap.svg
         description: LP in the TAI/ETH Pool.
         link: LP Link
         apy: "{{WSTETH_B_LP_APR}}%"
         apy_title: "RATE APR"
-        apy_description: "Assumes 2x WSTETH-B liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
+        apy_description: "Assumes c-ratio of {{WSTETH_B_CRATIO}}% for APR calculation."
 
       - until: Ongoing
-        amount: RATE/day
+        amount: "{{LP_PER_DAY}} RATE/day"
         name: TAI/ETH LP from RETH-A Safe
         image: https://images.ctfassets.net/zql9qw49kkiw/gODeJOOfrFIXz5pGXkNVO/df191e8900a2e9c9c868344b874c09ea/uniswap.svg
         description: LP in the TAI/ETH Pool.
         link: LP Link
         apy: "{{RETH_A_LP_APR}}%"
         apy_title: "RATE APR"
-        apy_description: "Assumes 2x RETH-A liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
+        apy_description: "Assumes c-ratio of {{RETH_A_CRATIO}}% for APR calculation."
 
       - until: Ongoing
-        amount: RATE/day
+        amount: "{{LP_PER_DAY}} RATE/day"
         name: TAI/ETH LP from RETH-B Safe
         image: https://images.ctfassets.net/zql9qw49kkiw/gODeJOOfrFIXz5pGXkNVO/df191e8900a2e9c9c868344b874c09ea/uniswap.svg
         description: LP in the TAI/ETH Pool.
         link: LP Link
         apy: "{{RETH_B_LP_APR}}%"
         apy_title: "RATE APR"
-        apy_description: "Assumes 2x RETH-B liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
+        apy_description: "Assumes c-ratio of {{RETH_A_CRATIO}}% for APR calculation."
 
       - until: Ongoing
-        amount: RATE/day
+        amount: "{{LP_PER_DAY}} RATE/day"
         name: TAI/ETH LP from RAI-A Safe
         image: https://images.ctfassets.net/zql9qw49kkiw/gODeJOOfrFIXz5pGXkNVO/df191e8900a2e9c9c868344b874c09ea/uniswap.svg
         description: LP in the TAI/ETH Pool.
         link: LP Link
         apy: "{{RAI_A_LP_APR}}%"
         apy_title: "RATE APR"
-        apy_description: "Assumes 2x RAI-A liquidation ratio as c-ratio for APR calculation. Not including Uniswap fees revenue."
+        apy_description: "Assumes c-ratio of {{RAI_A_CRATIO}}% for APR calculation."
 
 
   # Other rounds...
