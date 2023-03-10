@@ -6,7 +6,7 @@ rounds:
     distros:
       - until: Ongoing
         amount: "{{ETH_A_MINT_RATE_PER_DAY}} RATE/day"
-        name: ETH-A TAI Minter
+        name: ETH-A TAI
         image: "{{TAI_ICON}}" 
         description: Mint TAI from ETH-A Safe
         link: https://goerli-app.tai.money
@@ -16,7 +16,7 @@ rounds:
 
       - until: Ongoing
         amount: "{{ETH_B_MINT_RATE_PER_DAY}} RATE/day"
-        name: ETH-B TAI Minter
+        name: ETH-B TAI
         image: "{{TAI_ICON}}" 
         description: Mint TAI from ETH-B Safe
         link: https://goerli-app.tai.money
@@ -26,7 +26,7 @@ rounds:
 
       - until: Ongoing
         amount: "{{ETH_C_MINT_RATE_PER_DAY}} RATE/day"
-        name: ETH-C TAI Minter
+        name: ETH-C TAI
         image: "{{TAI_ICON}}" 
         description: Mint TAI from ETH-C Safe
         link: https://goerli-app.tai.money
@@ -36,7 +36,7 @@ rounds:
 
       - until: Ongoing
         amount: "{{WSTETH_A_MINT_RATE_PER_DAY}} RATE/day"
-        name: WSTETH-A TAI Minter
+        name: WSTETH-A TAI
         image: "{{TAI_ICON}}" 
         description: Mint TAI from WSTETH-A Safe
         link: https://goerli-app.tai.money
@@ -46,7 +46,7 @@ rounds:
 
       - until: Ongoing
         amount: "{{WSTETH_B_MINT_RATE_PER_DAY}} RATE/day"
-        name: WSTETH-B TAI Minter
+        name: WSTETH-B TAI
         image: "{{TAI_ICON}}" 
         description: Mint TAI from WSTETH-B Safe
         link: https://goerli-app.tai.money
@@ -56,7 +56,7 @@ rounds:
 
       - until: Ongoing
         amount: "{{RETH_A_MINT_RATE_PER_DAY}} RATE/day"
-        name: RETH-A TAI Minter
+        name: RETH-A TAI
         image: "{{TAI_ICON}}" 
         description: Mint TAI from RETH-A Safe
         link: https://goerli-app.tai.money
@@ -66,7 +66,7 @@ rounds:
 
       - until: Ongoing
         amount: "{{RETH_B_MINT_RATE_PER_DAY}} RATE/day"
-        name: RETH-B TAI Minter
+        name: RETH-B TAI
         image: "{{TAI_ICON}}" 
         description: Mint TAI from RETH-B Safe
         link: https://goerli-app.tai.money
@@ -76,7 +76,7 @@ rounds:
 
       - until: Ongoing
         amount: "{{RAI_A_MINT_RATE_PER_DAY}} RATE/day"
-        name: RAI-A TAI Minter
+        name: RAI-A TAI
         image: "{{TAI_ICON}}" 
         description: Mint TAI from RAI-A Safe
         link: https://goerli-app.tai.money
@@ -85,87 +85,16 @@ rounds:
         apy_description: "Assumes c-ratio of {{RAI_A_CRATIO}}% for APR calculation."
 
         # LP
-
+        
       - until: Ongoing
         amount: "{{LP_PER_DAY}} RATE/day"
-        name: TAI/ETH LP from ETH-A Safe
+        name: TAI/ETH LP
         image: https://images.ctfassets.net/zql9qw49kkiw/gODeJOOfrFIXz5pGXkNVO/df191e8900a2e9c9c868344b874c09ea/uniswap.svg
         description: LP in the TAI/ETH Pool.
         link: LP Link
-        apy: "{{ETH_A_LP_APR}}%"
+        apy: "{{TAI_ETH_LP_APR}}%"
         apy_title: "RATE APR"
-        apy_description: "Assumes c-ratio of {{ETH_A_CRATIO}}% for APR calculation."
-
-      - until: Ongoing
-        amount: "{{LP_PER_DAY}} RATE/day"
-        name: TAI/ETH LP from ETH-B Safe
-        image: https://images.ctfassets.net/zql9qw49kkiw/gODeJOOfrFIXz5pGXkNVO/df191e8900a2e9c9c868344b874c09ea/uniswap.svg
-        description: LP in the TAI/ETH Pool.
-        link: LP Link
-        apy: "{{ETH_B_LP_APR}}%"
-        apy_title: "RATE APR"
-        apy_description: "Assumes c-ratio of {{ETH_B_CRATIO}}% for APR calculation."
-
-      - until: Ongoing
-        amount: "{{LP_PER_DAY}} RATE/day"
-        name: TAI/ETH LP from ETH-C Safe
-        image: https://images.ctfassets.net/zql9qw49kkiw/gODeJOOfrFIXz5pGXkNVO/df191e8900a2e9c9c868344b874c09ea/uniswap.svg
-        description: LP in the TAI/ETH Pool.
-        link: LP Link
-        apy: "{{ETH_C_LP_APR}}%"
-        apy_title: "RATE APR"
-        apy_description: "Assumes c-ratio of {{ETH_C_CRATIO}}% for APR calculation."
-
-      - until: Ongoing
-        amount: "{{LP_PER_DAY}} RATE/day"
-        name: TAI/ETH LP from WSTETH-A Safe
-        image: https://images.ctfassets.net/zql9qw49kkiw/gODeJOOfrFIXz5pGXkNVO/df191e8900a2e9c9c868344b874c09ea/uniswap.svg
-        description: LP in the TAI/ETH Pool.
-        link: LP Link
-        apy: "{{WSTETH_A_LP_APR}}%"
-        apy_title: "RATE APR"
-        apy_description: "Assumes c-ratio of {{WSTETH_A_CRATIO}}% for APR calculation."
-
-      - until: Ongoing
-        amount: "{{LP_PER_DAY}} RATE/day"
-        name: TAI/ETH LP from WSTETH-B Safe
-        image: https://images.ctfassets.net/zql9qw49kkiw/gODeJOOfrFIXz5pGXkNVO/df191e8900a2e9c9c868344b874c09ea/uniswap.svg
-        description: LP in the TAI/ETH Pool.
-        link: LP Link
-        apy: "{{WSTETH_B_LP_APR}}%"
-        apy_title: "RATE APR"
-        apy_description: "Assumes c-ratio of {{WSTETH_B_CRATIO}}% for APR calculation."
-
-      - until: Ongoing
-        amount: "{{LP_PER_DAY}} RATE/day"
-        name: TAI/ETH LP from RETH-A Safe
-        image: https://images.ctfassets.net/zql9qw49kkiw/gODeJOOfrFIXz5pGXkNVO/df191e8900a2e9c9c868344b874c09ea/uniswap.svg
-        description: LP in the TAI/ETH Pool.
-        link: LP Link
-        apy: "{{RETH_A_LP_APR}}%"
-        apy_title: "RATE APR"
-        apy_description: "Assumes c-ratio of {{RETH_A_CRATIO}}% for APR calculation."
-
-      - until: Ongoing
-        amount: "{{LP_PER_DAY}} RATE/day"
-        name: TAI/ETH LP from RETH-B Safe
-        image: https://images.ctfassets.net/zql9qw49kkiw/gODeJOOfrFIXz5pGXkNVO/df191e8900a2e9c9c868344b874c09ea/uniswap.svg
-        description: LP in the TAI/ETH Pool.
-        link: LP Link
-        apy: "{{RETH_B_LP_APR}}%"
-        apy_title: "RATE APR"
-        apy_description: "Assumes c-ratio of {{RETH_A_CRATIO}}% for APR calculation."
-
-      - until: Ongoing
-        amount: "{{LP_PER_DAY}} RATE/day"
-        name: TAI/ETH LP from RAI-A Safe
-        image: https://images.ctfassets.net/zql9qw49kkiw/gODeJOOfrFIXz5pGXkNVO/df191e8900a2e9c9c868344b874c09ea/uniswap.svg
-        description: LP in the TAI/ETH Pool.
-        link: LP Link
-        apy: "{{RAI_A_LP_APR}}%"
-        apy_title: "RATE APR"
-        apy_description: "Assumes c-ratio of {{RAI_A_CRATIO}}% for APR calculation."
-
+        apy_description: "Cost basis is the total value of TAI and ETH added to the TAI/ETH pool."
 
   # Other rounds...
   # - number: 3

@@ -9,64 +9,119 @@ import {
   getUniV3Positions,
   nFormatter,
 } from "./utils";
+import JSBI from 'jsbi'
 import { BigNumber, ethers } from "ethers";
 import { GebAdmin } from "@money-god/geb-admin";
+import { Geb, utils } from 'mcgeb.js'
 import { utils } from 'mcgeb.js'
 import { DynamoDB } from "aws-sdk";
 
-const BLOCK_INTERVAL = 13;
+import { CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
+import {
+  MintOptions,
+  nearestUsableTick,
+  NonfungiblePositionManager,
+  Pool,
+  Position,
+} from '@uniswap/v3-sdk';
+
+import { SqrtPriceMath, TickMath, FullMath, } from '@uniswap/v3-sdk';
+
+const BLOCK_INTERVAL = 12;
 
 export const createDoc = async (): Promise<Document> => {
   const provider = new ethers.providers.StaticJsonRpcProvider(process.env.ETH_RPC);
-  //const geb = new GebAdmin("mainnet", provider);
-  const geb = new GebAdmin("goerli", provider);
+  const geb = new Geb("goerli", provider);
+  const gebAdmin = new GebAdmin("goerli", provider);
   const rawDoc = require("../distros.yml");
   const valuesMap = new Map<string, string>();
 
-  const debtRewardsRequest = geb.contracts.debtRewards.rewardRate(true);
+    
+  const [tickLower, tickUpper] = [-887220, 887220]
+  const positionTypes = ['address','int24','int24']
+  const positionValues = [gebAdmin.contracts.bunniHub.address, tickLower, tickUpper]
+  const v3PoolRequest = gebAdmin.contracts.uniswapV3PairCoinEth.positions(ethers.utils.solidityKeccak256(positionTypes, positionValues), true);
+  const v3SlotRequest = gebAdmin.contracts.uniswapV3PairCoinEth.slot0(true);
+  const bunniTokenRequest = gebAdmin.contracts.bunniToken.totalSupply(true);
 
-  const ethARequest = geb.contracts.oracleRelayer.collateralTypes(utils.ETH_A, true);
-  const ethBRequest = geb.contracts.oracleRelayer.collateralTypes(utils.ETH_B, true);
-  const ethCRequest = geb.contracts.oracleRelayer.collateralTypes(utils.ETH_C, true);
-  const wstethARequest = geb.contracts.oracleRelayer.collateralTypes(utils.WSTETH_A, true);
-  const wstethBRequest = geb.contracts.oracleRelayer.collateralTypes(utils.WSTETH_B, true);
-  const rethARequest = geb.contracts.oracleRelayer.collateralTypes(utils.RETH_A, true);
-  const rethBRequest = geb.contracts.oracleRelayer.collateralTypes(utils.RETH_B, true);
-  const raiARequest = geb.contracts.oracleRelayer.collateralTypes(utils.RAI_A, true);
+  v3PoolRequest.to = gebAdmin.contracts.uniswapV3PairCoinEth.address
+  v3SlotRequest.to = gebAdmin.contracts.uniswapV3PairCoinEth.address
+  bunniTokenRequest.to = gebAdmin.contracts.bunniToken.address 
+  // @ts-ignore
+  const multicall1 = gebAdmin.multiCall([
+    v3PoolRequest, // 0
+    v3SlotRequest, // 1
+    bunniTokenRequest // 1
+  ]) as any[];
 
-  debtRewardsRequest.to = geb.contracts.debtRewards.address
-  ethARequest.to = geb.contracts.oracleRelayer.address
-  ethBRequest.to = geb.contracts.oracleRelayer.address
-  ethCRequest.to = geb.contracts.oracleRelayer.address
-  wstethARequest.to = geb.contracts.oracleRelayer.address
-  wstethBRequest.to = geb.contracts.oracleRelayer.address
-  rethARequest.to = geb.contracts.oracleRelayer.address
-  rethBRequest.to = geb.contracts.oracleRelayer.address
-  raiARequest.to = geb.contracts.oracleRelayer.address
+  // == Execute all promises ==
+  const multiCallData1 = await Promise.all([
+    multicall1
+  ]);
+  const v3Pool = multiCallData1[0][0]  
+  const v3Slot = multiCallData1[0][1]  
+  const bunniTokenTotalSupply = multiCallData1[0][2]
 
-  const ethADebtRequest = geb.contracts.safeEngine.collateralTypes(utils.ETH_A, true);
-  const ethBDebtRequest = geb.contracts.safeEngine.collateralTypes(utils.ETH_B, true);
-  const ethCDebtRequest = geb.contracts.safeEngine.collateralTypes(utils.ETH_C, true);
-  const wstethADebtRequest = geb.contracts.safeEngine.collateralTypes(utils.WSTETH_A, true);
-  const wstethBDebtRequest = geb.contracts.safeEngine.collateralTypes(utils.WSTETH_B, true);
-  const rethADebtRequest = geb.contracts.safeEngine.collateralTypes(utils.RETH_A, true);
-  const rethBDebtRequest = geb.contracts.safeEngine.collateralTypes(utils.RETH_B, true);
-  const raiADebtRequest = geb.contracts.safeEngine.collateralTypes(utils.RAI_A, true);
+  const existingLiquidity = v3Pool.liquidity; 
+  const sqrtPriceX96 = v3Slot.sqrtPriceX96
+   
+  //const currentTotalSupply = 19 * utils.WAD;
 
-  ethADebtRequest.to = geb.contracts.safeEngine.address
-  ethBDebtRequest.to = geb.contracts.safeEngine.address
-  ethCDebtRequest.to = geb.contracts.safeEngine.address
-  wstethADebtRequest.to = geb.contracts.safeEngine.address
-  wstethBDebtRequest.to = geb.contracts.safeEngine.address
-  rethADebtRequest.to = geb.contracts.safeEngine.address
-  rethBDebtRequest.to = geb.contracts.safeEngine.address
-  raiADebtRequest.to = geb.contracts.safeEngine.address
+  const removedLiquidityPerShare = FullMath.mulDivRoundingUp(JSBI.BigInt(existingLiquidity), JSBI.BigInt(utils.WAD), JSBI.BigInt(bunniTokenTotalSupply));
+  console.log(String(removedLiquidityPerShare))
 
-  const redemptionPrice = bigNumberToNumber(await geb.contracts.oracleRelayer.redemptionPrice_readOnly()) / 1e27;
-  const globalDebt = bigNumberToNumber(await geb.contracts.safeEngine.globalDebt()) / 1e45;
+  const amount0 =  SqrtPriceMath.getAmount0Delta(JSBI.BigInt(sqrtPriceX96), TickMath.getSqrtRatioAtTick(tickUpper), JSBI.BigInt(removedLiquidityPerShare))
+  const amount1 =  SqrtPriceMath.getAmount1Delta(TickMath.getSqrtRatioAtTick(tickLower), JSBI.BigInt(sqrtPriceX96), JSBI.BigInt(removedLiquidityPerShare))
+
+
+  process.exit(0)
+
+  const debtRewardsRequest = gebAdmin.contracts.debtRewards.rewardRate(true);
+  const liqRewardsRequest = gebAdmin.contracts.liquidityRewards.rewardRate(true);
+
+  const ethARequest = gebAdmin.contracts.oracleRelayer.collateralTypes(utils.ETH_A, true);
+  const ethBRequest = gebAdmin.contracts.oracleRelayer.collateralTypes(utils.ETH_B, true);
+  const ethCRequest = gebAdmin.contracts.oracleRelayer.collateralTypes(utils.ETH_C, true);
+  const wstethARequest = gebAdmin.contracts.oracleRelayer.collateralTypes(utils.WSTETH_A, true);
+  const wstethBRequest = gebAdmin.contracts.oracleRelayer.collateralTypes(utils.WSTETH_B, true);
+  const rethARequest = gebAdmin.contracts.oracleRelayer.collateralTypes(utils.RETH_A, true);
+  const rethBRequest = gebAdmin.contracts.oracleRelayer.collateralTypes(utils.RETH_B, true);
+  const raiARequest = gebAdmin.contracts.oracleRelayer.collateralTypes(utils.RAI_A, true);
+
+  debtRewardsRequest.to = gebAdmin.contracts.debtRewards.address
+  liqRewardsRequest.to = gebAdmin.contracts.liquidityRewards.address
+  ethARequest.to = gebAdmin.contracts.oracleRelayer.address
+  ethBRequest.to = gebAdmin.contracts.oracleRelayer.address
+  ethCRequest.to = gebAdmin.contracts.oracleRelayer.address
+  wstethARequest.to = gebAdmin.contracts.oracleRelayer.address
+  wstethBRequest.to = gebAdmin.contracts.oracleRelayer.address
+  rethARequest.to = gebAdmin.contracts.oracleRelayer.address
+  rethBRequest.to = gebAdmin.contracts.oracleRelayer.address
+  raiARequest.to = gebAdmin.contracts.oracleRelayer.address
+
+  const ethADebtRequest = gebAdmin.contracts.safeEngine.collateralTypes(utils.ETH_A, true);
+  const ethBDebtRequest = gebAdmin.contracts.safeEngine.collateralTypes(utils.ETH_B, true);
+  const ethCDebtRequest = gebAdmin.contracts.safeEngine.collateralTypes(utils.ETH_C, true);
+  const wstethADebtRequest = gebAdmin.contracts.safeEngine.collateralTypes(utils.WSTETH_A, true);
+  const wstethBDebtRequest = gebAdmin.contracts.safeEngine.collateralTypes(utils.WSTETH_B, true);
+  const rethADebtRequest = gebAdmin.contracts.safeEngine.collateralTypes(utils.RETH_A, true);
+  const rethBDebtRequest = gebAdmin.contracts.safeEngine.collateralTypes(utils.RETH_B, true);
+  const raiADebtRequest = gebAdmin.contracts.safeEngine.collateralTypes(utils.RAI_A, true);
+
+  ethADebtRequest.to = gebAdmin.contracts.safeEngine.address
+  ethBDebtRequest.to = gebAdmin.contracts.safeEngine.address
+  ethCDebtRequest.to = gebAdmin.contracts.safeEngine.address
+  wstethADebtRequest.to = gebAdmin.contracts.safeEngine.address
+  wstethBDebtRequest.to = gebAdmin.contracts.safeEngine.address
+  rethADebtRequest.to = gebAdmin.contracts.safeEngine.address
+  rethBDebtRequest.to = gebAdmin.contracts.safeEngine.address
+  raiADebtRequest.to = gebAdmin.contracts.safeEngine.address
+
+  const redemptionPrice = bigNumberToNumber(await gebAdmin.contracts.oracleRelayer.redemptionPrice_readOnly()) / 1e27;
+  const globalDebt = bigNumberToNumber(await gebAdmin.contracts.safeEngine.globalDebt()) / 1e45;
 
   // @ts-ignore
-  const multicall = geb.multiCall([
+  const multicall = gebAdmin.multiCall([
     ethARequest, // 0
     ethBRequest, // 1
     ethCRequest, // 2
@@ -84,6 +139,7 @@ export const createDoc = async (): Promise<Document> => {
     rethADebtRequest, //14
     rethBDebtRequest, //15
     raiADebtRequest, //16
+    liqRewardsRequest, //17  
   ]) as any[];
 
   // == Execute all promises ==
@@ -125,6 +181,7 @@ export const createDoc = async (): Promise<Document> => {
   const raiACratio = 2 * raiALR/1e27 * 100
 
   const debtRewardsRate = multiCallData[0][8]/1e18 // Rate per debt per block
+  const liqRewardsRate = multiCallData[0][17]/1e18 // Rate per TAI per block
 
   const ethADebt = multiCallData[0][9].debtAmount/1e18
   const ethBDebt = multiCallData[0][10].debtAmount/1e18
@@ -143,6 +200,9 @@ export const createDoc = async (): Promise<Document> => {
 
   const ratePerDebtPerYear = blockRateToYearlyRate(debtRewardsRate)
   const ratePerDebtPerDay = blockRateToDailyRate(debtRewardsRate)
+
+  const ratePerLPPerYear = blockRateToYearlyRate(liqRewardsRate)
+  const ratePerLPPerDay = blockRateToDailyRate(liqRewardsRate)
  
   // Amount of RATE emitted per day for each c-type at current debt levels
   const ethADailyRate = ethADebt * ratePerDebtPerDay  
@@ -153,6 +213,9 @@ export const createDoc = async (): Promise<Document> => {
   const rethADailyRate = rethADebt * ratePerDebtPerDay  
   const rethBDailyRate = rethBDebt * ratePerDebtPerDay  
   const raiADailyRate = raiADebt * ratePerDebtPerDay  
+
+  const LPDailyRate = taiLPed * ratePerLPPerDay  
+   
 
   // amount of debt at c-ratio = 2 * liq-ratio
   const ethADebtUsed =  ethPrice / (ethALR/1e27) / redemptionPrice
@@ -173,6 +236,9 @@ export const createDoc = async (): Promise<Document> => {
   const rethAAPR = rethADebtUsed * ratePerDebtPerYear * ratePrice / rethPrice
   const rethBAPR = rethBDebtUsed * ratePerDebtPerYear * ratePrice / rethPrice
   const raiAAPR = raiADebtUsed * ratePerDebtPerYear * ratePrice / raiPrice
+
+  // APR for LPing 
+  const LPAPR = ratePerLPPerYear * ratePrice / redemptionPrice
 
   valuesMap.set("ETH_A_CRATIO", ethACratio);
   valuesMap.set("ETH_B_CRATIO", ethBCratio);
@@ -215,21 +281,21 @@ export const createDoc = async (): Promise<Document> => {
   /*
    *
   // Uniswap
-  const flxEthReservesRequest = geb.contracts.uniswapPairCoinEth.getReserves(true);
+  const flxEthReservesRequest = gebAdmin.contracts.uniswapPairCoinEth.getReserves(true);
   flxEthReservesRequest.to = "0xd6F3768E62Ef92a9798E5A8cEdD2b78907cEceF9"; // uni-v2 eth flx
 
-  const flxEthLpTotalSupplyRequest = geb.contracts.uniswapPairCoinEth.totalSupply(true);
+  const flxEthLpTotalSupplyRequest = gebAdmin.contracts.uniswapPairCoinEth.totalSupply(true);
   flxEthLpTotalSupplyRequest.to = "0xd6F3768E62Ef92a9798E5A8cEdD2b78907cEceF9"; // uni-v2 eth flx
 
 
   // Uni V3 RAI/DAI
-  const uniV3Slot0Request = geb.contracts.uniswapV3PairCoinEth.slot0(true);
+  const uniV3Slot0Request = gebAdmin.contracts.uniswapV3PairCoinEth.slot0(true);
   uniV3Slot0Request.to = "0xcB0C5d9D92f4F2F80cce7aa271a1E148c226e19D";
 
   // @ts-ignore
-  const multicall = geb.multiCall([
+  const multicall = gebAdmin.multiCall([
     // uniswap
-    geb.contracts.uniswapPairCoinEth.getReserves(true), // 0
+    gebAdmin.contracts.uniswapPairCoinEth.getReserves(true), // 0
     flxEthReservesRequest, // 1
 
     // Aave
@@ -247,17 +313,17 @@ export const createDoc = async (): Promise<Document> => {
     fuseSupplyRateRequest, // 9
 
     // FLX staking
-    geb.contracts.stakingFirstResort.rewardRate(true), // 10
-    geb.contracts.stakingToken.totalSupply(true), // 11
+    gebAdmin.contracts.stakingFirstResort.rewardRate(true), // 10
+    gebAdmin.contracts.stakingToken.totalSupply(true), // 11
     flxEthLpTotalSupplyRequest, // 12
-    geb.contracts.stakingFirstResort.stakedSupply(true), // 13
+    gebAdmin.contracts.stakingFirstResort.stakedSupply(true), // 13
 
     // Uni V3 RAI/DAI
     uniV3Slot0Request, // 14
   ]) as any[];
 
   const redemptionPrice =
-    bigNumberToNumber(await geb.contracts.oracleRelayer.redemptionPrice_readOnly()) / 1e27;
+    bigNumberToNumber(await gebAdmin.contracts.oracleRelayer.redemptionPrice_readOnly()) / 1e27;
 
   // == Execute all prmoises ==
   const [[raiPrice, flxPrice], multiCallData] = await Promise.all([

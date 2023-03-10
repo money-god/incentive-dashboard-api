@@ -29,7 +29,10 @@
     "yaml-loader": "^0.6.0"
   },
   "dependencies": {
-    "@money-god/geb-admin": "^1.0.20",
+    "mcgeb.js": "1.0.24",
+    "@money-god/geb-admin": "^1.0.24",
+    "@uniswap/sdk-core": "^3.2.1",
+    "@uniswap/v3-sdk": "^3.9.0",
     "axios": "^0.20.0",
     "ethers": "^5.0.14"
   }
