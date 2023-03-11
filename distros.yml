@@ -87,12 +87,12 @@ rounds:
         # LP
         
       - until: Ongoing
-        amount: "{{LP_PER_DAY}} RATE/day"
+        amount: "{{LP_RATE_PER_DAY}} RATE/day"
         name: TAI/ETH LP
         image: https://images.ctfassets.net/zql9qw49kkiw/gODeJOOfrFIXz5pGXkNVO/df191e8900a2e9c9c868344b874c09ea/uniswap.svg
         description: LP in the TAI/ETH Pool.
         link: LP Link
-        apy: "{{TAI_ETH_LP_APR}}%"
+        apy: "{{LP_APR}}%"
         apy_title: "RATE APR"
         apy_description: "Cost basis is the total value of TAI and ETH added to the TAI/ETH pool."
 
