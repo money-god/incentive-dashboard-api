@@ -270,7 +270,6 @@ export const createDoc = async (): Promise<Document> => {
   v3PoolRequest.to = gebAdmin.contracts.uniswapV3PairCoinEth.address
   v3SlotRequest.to = gebAdmin.contracts.uniswapV3PairCoinEth.address
   bunniTokenRequest.to = gebAdmin.contracts.bunniToken.address 
-
   // @ts-ignore
   const multicall1 = gebAdmin.multiCall([
     v3PoolRequest, // 0
@@ -304,18 +303,7 @@ export const createDoc = async (): Promise<Document> => {
   const returnAmount = ratePrice * ratePerLPPerDay * 365
   const lpAPR =  (returnAmount/costBasis * 100)
 
-
   const LPDailyRate = bunniTokenTotalSupply/1e18 * ratePerLPPerDay  
-    /*
-     * returnAmount  1.4501710627966009e-11
-    costBasis  1474.42
-    lpAPR  9.835535755053518e-13
-    LPDailyRate   7200.000000000001
-  */
-  console.log("returnAmount ", returnAmount)
-  console.log("costBasis ", costBasis)
-  console.log("lpAPR ", lpAPR)
-  console.log("LPDailyRate  ", LPDailyRate)
 
   // APR for LPing 
   const LPAPR = ratePerLPPerYear * ratePrice / redemptionPrice
