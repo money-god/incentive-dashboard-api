@@ -29,8 +29,10 @@
     "yaml-loader": "^0.6.0"
   },
   "dependencies": {
-    "@money-god/geb-admin": "^1.0.20",
+    "@money-god/geb-admin": "^1.0.25",
     "axios": "^0.20.0",
-    "ethers": "^5.0.14"
+    "d": "^1.0.1",
+    "ethers": "^5.0.14",
+    "tiny-invariant": "^1.1.0"
   }
 }
