@@ -4,6 +4,18 @@ rounds:
     #snapshotDate: 2023-04-15T12:50Z
     # distributionDate: 2021-11-17T12:50Z
     distros:
+
+        # LP
+      - until: Ongoing
+        amount: "{{LP_RATE_PER_DAY}} RATE/day"
+        name: TAI/ETH LP
+        image: https://images.ctfassets.net/zql9qw49kkiw/gODeJOOfrFIXz5pGXkNVO/df191e8900a2e9c9c868344b874c09ea/uniswap.svg
+        description: LP in the TAI/ETH Pool.
+        link: LP Link
+        apy: "{{LP_APR}}%"
+        apy_title: "RATE APR"
+        apy_description: "Cost basis is the total value of TAI and ETH added to the TAI/ETH pool."
+
       - until: Ongoing
         amount: "{{ETH_A_MINT_RATE_PER_DAY}} RATE/day"
         name: ETH-A TAI
@@ -84,17 +96,6 @@ rounds:
         apy_title: "RAI-A RATE APR"
         apy_description: "Assumes c-ratio of {{RAI_A_CRATIO}}% for APR calculation."
 
-        # LP
-        
-      - until: Ongoing
-        amount: "{{LP_RATE_PER_DAY}} RATE/day"
-        name: TAI/ETH LP
-        image: https://images.ctfassets.net/zql9qw49kkiw/gODeJOOfrFIXz5pGXkNVO/df191e8900a2e9c9c868344b874c09ea/uniswap.svg
-        description: LP in the TAI/ETH Pool.
-        link: LP Link
-        apy: "{{LP_APR}}%"
-        apy_title: "RATE APR"
-        apy_description: "Cost basis is the total value of TAI and ETH added to the TAI/ETH pool."
 
   # Other rounds...
   # - number: 3
