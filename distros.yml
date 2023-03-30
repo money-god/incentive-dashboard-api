@@ -1,8 +1,7 @@
 rounds:
   - number: 0
-    name: Current TAI Incentives
-    #snapshotDate: 2023-04-15T12:50Z
-    # distributionDate: 2021-11-17T12:50Z
+    name: Current TAI Rewards
+    rate_usd: "{{RATE_USD}}"
     distros:
 
         # LP

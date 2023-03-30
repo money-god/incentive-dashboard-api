@@ -106,7 +106,7 @@ export const createDoc = async (): Promise<Document> => {
   const gebAdmin = new GebAdmin("goerli", provider);
   const rawDoc = require("../distros.yml");
   const valuesMap = new Map<string, string>();
-  const ratePrice = 5
+  const rateUsd = 5
 
   /*
    * 
@@ -246,14 +246,14 @@ export const createDoc = async (): Promise<Document> => {
   const raiADebtUsed =  raiPrice / (raiALR/1e27) / redemptionPrice
 
   // APRs for minting
-  const ethAAPR = ethADebtUsed * ratePerDebtPerYear * ratePrice / ethPrice
-  const ethBAPR = ethBDebtUsed * ratePerDebtPerYear * ratePrice / ethPrice
-  const ethCAPR = ethCDebtUsed * ratePerDebtPerYear * ratePrice / ethPrice
-  const wstethAAPR = wstethADebtUsed * ratePerDebtPerYear * ratePrice / wstethPrice
-  const wstethBAPR = wstethBDebtUsed * ratePerDebtPerYear * ratePrice / wstethPrice
-  const rethAAPR = rethADebtUsed * ratePerDebtPerYear * ratePrice / rethPrice
-  const rethBAPR = rethBDebtUsed * ratePerDebtPerYear * ratePrice / rethPrice
-  const raiAAPR = raiADebtUsed * ratePerDebtPerYear * ratePrice / raiPrice
+  const ethAAPR = ethADebtUsed * ratePerDebtPerYear * rateUsd / ethPrice
+  const ethBAPR = ethBDebtUsed * ratePerDebtPerYear * rateUsd / ethPrice
+  const ethCAPR = ethCDebtUsed * ratePerDebtPerYear * rateUsd / ethPrice
+  const wstethAAPR = wstethADebtUsed * ratePerDebtPerYear * rateUsd / wstethPrice
+  const wstethBAPR = wstethBDebtUsed * ratePerDebtPerYear * rateUsd / wstethPrice
+  const rethAAPR = rethADebtUsed * ratePerDebtPerYear * rateUsd / rethPrice
+  const rethBAPR = rethBDebtUsed * ratePerDebtPerYear * rateUsd / rethPrice
+  const raiAAPR = raiADebtUsed * ratePerDebtPerYear * rateUsd / raiPrice
 
   /*
    * 
@@ -299,15 +299,16 @@ export const createDoc = async (): Promise<Document> => {
   const ratePerLPPerDay = blockRateToDailyRate(liqRewardsRate)
 
   const costBasis = amount0 * ethPrice + amount1 * redemptionPrice
-  //const returnAmount = ratePrice * liqRewardsRate/1e18 * 7200 * 365
-  const returnAmount = ratePrice * ratePerLPPerDay * 365
+  //const returnAmount = rateUsd * liqRewardsRate/1e18 * 7200 * 365
+  const returnAmount = rateUsd * ratePerLPPerDay * 365
   const lpAPR =  (returnAmount/costBasis * 100)
 
   const LPDailyRate = bunniTokenTotalSupply/1e18 * ratePerLPPerDay  
 
   // APR for LPing 
-  const LPAPR = ratePerLPPerYear * ratePrice / redemptionPrice
+  const LPAPR = ratePerLPPerYear * rateUsd / redemptionPrice
 
+  valuesMap.set("RATE_USD", rateUsd);
   valuesMap.set("ETH_A_CRATIO", ethACratio);
   valuesMap.set("ETH_B_CRATIO", ethBCratio);
   valuesMap.set("ETH_C_CRATIO", ethCCratio);
