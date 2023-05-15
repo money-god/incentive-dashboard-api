@@ -299,7 +299,6 @@ export const createDoc = async (): Promise<Document> => {
   const ratePerLPPerDay = blockRateToDailyRate(liqRewardsRate)
 
   const costBasis = amount0 * ethPrice + amount1 * redemptionPrice
-  //const returnAmount = rateUsd * liqRewardsRate/1e18 * 7200 * 365
   const returnAmount = rateUsd * ratePerLPPerDay * 365
   const lpAPR =  (returnAmount/costBasis * 100)
 
