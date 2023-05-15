@@ -299,7 +299,6 @@ export const createDoc = async (): Promise<Document> => {
   const ratePerLPPerDay = blockRateToDailyRate(liqRewardsRate)
 
   const costBasis = amount0 * ethPrice + amount1 * redemptionPrice
-  //const returnAmount = rateUsd * liqRewardsRate/1e18 * 7200 * 365
   const returnAmount = rateUsd * ratePerLPPerDay * 365
   const lpAPR =  (returnAmount/costBasis * 100)
 
@@ -309,14 +308,14 @@ export const createDoc = async (): Promise<Document> => {
   const LPAPR = ratePerLPPerYear * rateUsd / redemptionPrice
 
   valuesMap.set("RATE_USD", rateUsd);
-  valuesMap.set("ETH_A_CRATIO", ethACratio);
-  valuesMap.set("ETH_B_CRATIO", ethBCratio);
-  valuesMap.set("ETH_C_CRATIO", ethCCratio);
-  valuesMap.set("WSTETH_A_CRATIO", wstethACratio);
-  valuesMap.set("WSTETH_B_CRATIO", wstethBCratio);
-  valuesMap.set("RETH_A_CRATIO", rethACratio);
-  valuesMap.set("RETH_B_CRATIO", rethBCratio);
-  valuesMap.set("RAI_A_CRATIO", raiACratio);
+  valuesMap.set("ETH_A_CRATIO", Math.round(ethACratio));
+  valuesMap.set("ETH_B_CRATIO", Math.round(ethBCratio));
+  valuesMap.set("ETH_C_CRATIO", Math.round(ethCCratio));
+  valuesMap.set("WSTETH_A_CRATIO", Math.round(wstethACratio));
+  valuesMap.set("WSTETH_B_CRATIO", Math.round(wstethBCratio));
+  valuesMap.set("RETH_A_CRATIO", Math.round(rethACratio));
+  valuesMap.set("RETH_B_CRATIO", Math.round(rethBCratio));
+  valuesMap.set("RAI_A_CRATIO", Math.round(raiACratio));
 
   valuesMap.set("ETH_A_MINT_RATE_PER_DAY", nFormatter(ethADailyRate, 2));
   valuesMap.set("ETH_B_MINT_RATE_PER_DAY", nFormatter(ethBDailyRate, 2));
