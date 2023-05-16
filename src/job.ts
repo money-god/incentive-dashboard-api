@@ -103,7 +103,7 @@ function getSqrtRatioAtTick(tick: number): JSBI {
 
 export const createDoc = async (): Promise<Document> => {
   const provider = new ethers.providers.StaticJsonRpcProvider(process.env.ETH_RPC);
-  const gebAdmin = new GebAdmin("goerli", provider);
+  const gebAdmin = new GebAdmin("mainnet", provider);
   const rawDoc = require("../distros.yml");
   const valuesMap = new Map<string, string>();
   const rateUsd = 5
@@ -124,6 +124,8 @@ export const createDoc = async (): Promise<Document> => {
   const wstethBRequest = gebAdmin.contracts.oracleRelayer.collateralTypes(utils.WSTETH_B, true);
   const rethARequest = gebAdmin.contracts.oracleRelayer.collateralTypes(utils.RETH_A, true);
   const rethBRequest = gebAdmin.contracts.oracleRelayer.collateralTypes(utils.RETH_B, true);
+  const cbethARequest = gebAdmin.contracts.oracleRelayer.collateralTypes(utils.CBETH_A, true);
+  const cbethBRequest = gebAdmin.contracts.oracleRelayer.collateralTypes(utils.CBETH_B, true);
   const raiARequest = gebAdmin.contracts.oracleRelayer.collateralTypes(utils.RAI_A, true);
 
   debtRewardsRequest.to = gebAdmin.contracts.debtRewards.address
@@ -135,6 +137,8 @@ export const createDoc = async (): Promise<Document> => {
   wstethBRequest.to = gebAdmin.contracts.oracleRelayer.address
   rethARequest.to = gebAdmin.contracts.oracleRelayer.address
   rethBRequest.to = gebAdmin.contracts.oracleRelayer.address
+  cbethARequest.to = gebAdmin.contracts.oracleRelayer.address
+  cbethBRequest.to = gebAdmin.contracts.oracleRelayer.address
   raiARequest.to = gebAdmin.contracts.oracleRelayer.address
 
   const ethADebtRequest = gebAdmin.contracts.safeEngine.collateralTypes(utils.ETH_A, true);
@@ -144,6 +148,8 @@ export const createDoc = async (): Promise<Document> => {
   const wstethBDebtRequest = gebAdmin.contracts.safeEngine.collateralTypes(utils.WSTETH_B, true);
   const rethADebtRequest = gebAdmin.contracts.safeEngine.collateralTypes(utils.RETH_A, true);
   const rethBDebtRequest = gebAdmin.contracts.safeEngine.collateralTypes(utils.RETH_B, true);
+  const cbethADebtRequest = gebAdmin.contracts.safeEngine.collateralTypes(utils.CBETH_A, true);
+  const cbethBDebtRequest = gebAdmin.contracts.safeEngine.collateralTypes(utils.CBETH_B, true);
   const raiADebtRequest = gebAdmin.contracts.safeEngine.collateralTypes(utils.RAI_A, true);
 
   ethADebtRequest.to = gebAdmin.contracts.safeEngine.address
@@ -153,6 +159,8 @@ export const createDoc = async (): Promise<Document> => {
   wstethBDebtRequest.to = gebAdmin.contracts.safeEngine.address
   rethADebtRequest.to = gebAdmin.contracts.safeEngine.address
   rethBDebtRequest.to = gebAdmin.contracts.safeEngine.address
+  cbethADebtRequest.to = gebAdmin.contracts.safeEngine.address
+  cbethBDebtRequest.to = gebAdmin.contracts.safeEngine.address
   raiADebtRequest.to = gebAdmin.contracts.safeEngine.address
 
   const redemptionPrice = bigNumberToNumber(await gebAdmin.contracts.oracleRelayer.redemptionPrice_readOnly()) / 1e27;
@@ -178,18 +186,24 @@ export const createDoc = async (): Promise<Document> => {
     rethBDebtRequest, //15
     raiADebtRequest, //16
     liqRewardsRequest, //17  
+    cbethARequest, // 18
+    cbethBRequest, // 19
+    cbethADebtRequest, // 20
+    cbethBDebtRequest, // 21
   ]) as any[];
 
   // == Execute all promises ==
   const multiCallData = await Promise.all([
     multicall,
-    coinGeckoPrice(["ethereum", "wrapped-steth", "rocket-pool-eth", "rai"])
+    coinGeckoPrice(["ethereum", "wrapped-steth", "rocket-pool-eth", "rai", "coinbase-wrapped-staked-eth"])
   ]);
+  process.exit(1)
 
   const ethPrice = multiCallData[1][0]  
   const wstethPrice = multiCallData[1][1]  
   const rethPrice = multiCallData[1][2]  
   const raiPrice = multiCallData[1][3]  
+  const cbethPrice = multiCallData[1][4]  
 
   const ethALR = multiCallData[0][0].liquidationCRatio
   const ethBLR = multiCallData[0][1].liquidationCRatio
@@ -199,6 +213,8 @@ export const createDoc = async (): Promise<Document> => {
   const rethALR = multiCallData[0][5].liquidationCRatio
   const rethBLR = multiCallData[0][6].liquidationCRatio
   const raiALR = multiCallData[0][7].liquidationCRatio
+  const cbethALR = multiCallData[0][18].liquidationCRatio
+  const cbethBLR = multiCallData[0][19].liquidationCRatio
 
   // Use 2 * liq-ratio for APR calculations
   const ethACratio = 2 * ethALR/1e27 * 100
@@ -209,6 +225,8 @@ export const createDoc = async (): Promise<Document> => {
   const rethACratio = 2 * rethALR/1e27 * 100
   const rethBCratio = 2 * rethBLR/1e27 * 100
   const raiACratio = 2 * raiALR/1e27 * 100
+  const cbethACratio = 2 * cbethALR/1e27 * 100
+  const cbethBCratio = 2 * cbethBLR/1e27 * 100
 
   const debtRewardsRate = multiCallData[0][8]/1e18 // Rate per debt per block
   const liqRewardsRate = multiCallData[0][17]/1e18 // Rate per TAI per block
@@ -221,6 +239,8 @@ export const createDoc = async (): Promise<Document> => {
   const rethADebt = multiCallData[0][14].debtAmount/1e18
   const rethBDebt = multiCallData[0][15].debtAmount/1e18
   const raiADebt = multiCallData[0][16].debtAmount/1e18
+  const cbethADebt = multiCallData[0][20].debtAmount/1e18
+  const cbethBDebt = multiCallData[0][21].debtAmount/1e18
 
   const ratePerDebtPerYear = blockRateToYearlyRate(debtRewardsRate)
   const ratePerDebtPerDay = blockRateToDailyRate(debtRewardsRate)
@@ -234,6 +254,8 @@ export const createDoc = async (): Promise<Document> => {
   const rethADailyRate = rethADebt * ratePerDebtPerDay  
   const rethBDailyRate = rethBDebt * ratePerDebtPerDay  
   const raiADailyRate = raiADebt * ratePerDebtPerDay  
+  const cbethADailyRate = cbethADebt * ratePerDebtPerDay  
+  const cbethBDailyRate = cbethBDebt * ratePerDebtPerDay  
 
   // amount of debt at c-ratio = 2 * liq-ratio
   const ethADebtUsed =  ethPrice / (ethALR/1e27) / redemptionPrice
@@ -244,6 +266,8 @@ export const createDoc = async (): Promise<Document> => {
   const rethADebtUsed =  rethPrice / (rethALR/1e27) / redemptionPrice
   const rethBDebtUsed =  rethPrice / (rethBLR/1e27) / redemptionPrice
   const raiADebtUsed =  raiPrice / (raiALR/1e27) / redemptionPrice
+  const cbethADebtUsed =  cbethPrice / (cbethALR/1e27) / redemptionPrice
+  const cbethBDebtUsed =  cbethPrice / (cbethBLR/1e27) / redemptionPrice
 
   // APRs for minting
   const ethAAPR = ethADebtUsed * ratePerDebtPerYear * rateUsd / ethPrice
@@ -254,6 +278,8 @@ export const createDoc = async (): Promise<Document> => {
   const rethAAPR = rethADebtUsed * ratePerDebtPerYear * rateUsd / rethPrice
   const rethBAPR = rethBDebtUsed * ratePerDebtPerYear * rateUsd / rethPrice
   const raiAAPR = raiADebtUsed * ratePerDebtPerYear * rateUsd / raiPrice
+  const cbethAAPR = cbethADebtUsed * ratePerDebtPerYear * rateUsd / cbethPrice
+  const cbethBAPR = cbethBDebtUsed * ratePerDebtPerYear * rateUsd / cbethPrice
 
   /*
    * 
@@ -316,6 +342,8 @@ export const createDoc = async (): Promise<Document> => {
   valuesMap.set("RETH_A_CRATIO", Math.round(rethACratio));
   valuesMap.set("RETH_B_CRATIO", Math.round(rethBCratio));
   valuesMap.set("RAI_A_CRATIO", Math.round(raiACratio));
+  valuesMap.set("CBETH_A_CRATIO", Math.round(cbethACratio));
+  valuesMap.set("CBETH_B_CRATIO", Math.round(cbethBCratio));
 
   valuesMap.set("ETH_A_MINT_RATE_PER_DAY", nFormatter(ethADailyRate, 2));
   valuesMap.set("ETH_B_MINT_RATE_PER_DAY", nFormatter(ethBDailyRate, 2));
@@ -325,6 +353,8 @@ export const createDoc = async (): Promise<Document> => {
   valuesMap.set("RETH_A_MINT_RATE_PER_DAY", nFormatter(rethADailyRate, 2));
   valuesMap.set("RETH_B_MINT_RATE_PER_DAY", nFormatter(rethBDailyRate, 2));
   valuesMap.set("RAI_A_MINT_RATE_PER_DAY", nFormatter(raiADailyRate, 2));
+  valuesMap.set("CBETH_A_MINT_RATE_PER_DAY", nFormatter(cbethADailyRate, 2));
+  valuesMap.set("CBETH_B_MINT_RATE_PER_DAY", nFormatter(cbethBDailyRate, 2));
 
   valuesMap.set("ETH_A_MINT_APR", nFormatter(formatPercent(ethAAPR * 100),  2));
   valuesMap.set("ETH_B_MINT_APR", nFormatter(formatPercent(ethBAPR * 100),  2));
@@ -334,6 +364,8 @@ export const createDoc = async (): Promise<Document> => {
   valuesMap.set("RETH_A_MINT_APR", nFormatter(formatPercent(rethAAPR * 100),  2));
   valuesMap.set("RETH_B_MINT_APR", nFormatter(formatPercent(rethBAPR * 100),  2));
   valuesMap.set("RAI_A_MINT_APR", nFormatter(formatPercent(raiAAPR * 100),  2));
+  valuesMap.set("CBETH_A_MINT_APR", nFormatter(formatPercent(cbethAAPR * 100),  2));
+  valuesMap.set("CBETH_B_MINT_APR", nFormatter(formatPercent(cbethBAPR * 100),  2));
 
   valuesMap.set("LP_RATE_PER_DAY", nFormatter(LPDailyRate, 2));
   valuesMap.set("LP_APR", nFormatter(formatPercent(lpAPR),  2));

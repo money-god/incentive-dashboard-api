@@ -20,7 +20,7 @@ rounds:
         name: ETH-A TAI
         image: "{{TAI_ICON}}" 
         description: Mint TAI from ETH-A Safe
-        link: https://goerli-app.tai.money
+        link: https://app.tai.money
         apy: "{{ETH_A_MINT_APR}}%"
         apy_title: "ETH-A RATE APR"
         apy_description: "Assumes c-ratio of {{ETH_A_CRATIO}}% for APR calculation."
@@ -30,7 +30,7 @@ rounds:
         name: ETH-B TAI
         image: "{{TAI_ICON}}" 
         description: Mint TAI from ETH-B Safe
-        link: https://goerli-app.tai.money
+        link: https://app.tai.money
         apy: "{{ETH_B_MINT_APR}}%"
         apy_title: "ETH-B RATE APR"
         apy_description: "Assumes c-ratio of {{ETH_B_CRATIO}}% for APR calculation."
@@ -40,7 +40,7 @@ rounds:
         name: ETH-C TAI
         image: "{{TAI_ICON}}" 
         description: Mint TAI from ETH-C Safe
-        link: https://goerli-app.tai.money
+        link: https://app.tai.money
         apy: "{{ETH_C_MINT_APR}}%"
         apy_title: "ETH-C RATE APR"
         apy_description: "Assumes c-ratio of {{ETH_C_CRATIO}}% for APR calculation."
@@ -50,7 +50,7 @@ rounds:
         name: WSTETH-A TAI
         image: "{{TAI_ICON}}" 
         description: Mint TAI from WSTETH-A Safe
-        link: https://goerli-app.tai.money
+        link: https://app.tai.money
         apy: "{{WSTETH_A_MINT_APR}}%"
         apy_title: "WSTETH-A RATE APR"
         apy_description: "Assumes c-ratio of {{WSTETH_A_CRATIO}}% for APR calculation."
@@ -60,7 +60,7 @@ rounds:
         name: WSTETH-B TAI
         image: "{{TAI_ICON}}" 
         description: Mint TAI from WSTETH-B Safe
-        link: https://goerli-app.tai.money
+        link: https://app.tai.money
         apy: "{{WSTETH_B_MINT_APR}}%"
         apy_title: "WSTETH-B RATE APR"
         apy_description: "Assumes c-ratio of {{WSTETH_B_CRATIO}}% for APR calculation."
@@ -70,7 +70,7 @@ rounds:
         name: RETH-A TAI
         image: "{{TAI_ICON}}" 
         description: Mint TAI from RETH-A Safe
-        link: https://goerli-app.tai.money
+        link: https://app.tai.money
         apy: "{{RETH_A_MINT_APR}}%"
         apy_title: "RETH-A RATE APR"
         apy_description: "Assumes c-ratio of {{RETH_A_CRATIO}}% for APR calculation."
@@ -80,17 +80,37 @@ rounds:
         name: RETH-B TAI
         image: "{{TAI_ICON}}" 
         description: Mint TAI from RETH-B Safe
-        link: https://goerli-app.tai.money
+        link: https://app.tai.money
         apy: "{{RETH_B_MINT_APR}}%"
         apy_title: "RETH-B RATE APR"
         apy_description: "Assumes c-ratio of {{RETH_B_CRATIO}}% for APR calculation."
+
+      - until: Ongoing
+        amount: "{{CBETH_A_MINT_RATE_PER_DAY}} RATE/day"
+        name: CBETH-A TAI
+        image: "{{TAI_ICON}}" 
+        description: Mint TAI from CBETH-A Safe
+        link: https://app.tai.money
+        apy: "{{CBETH_A_MINT_APR}}%"
+        apy_title: "CBETH-A RATE APR"
+        apy_description: "Assumes c-ratio of {{RcbETH_A_CRATIO}}% for APR calculation."
+
+      - until: Ongoing
+        amount: "{{CBETH_B_MINT_RATE_PER_DAY}} RATE/day"
+        name: CBETH-B TAI
+        image: "{{TAI_ICON}}" 
+        description: Mint TAI from CBETH-B Safe
+        link: https://app.tai.money
+        apy: "{{CBETH_B_MINT_APR}}%"
+        apy_title: "CBETH-B RATE APR"
+        apy_description: "Assumes c-ratio of {{CBETH_B_CRATIO}}% for APR calculation."
 
       - until: Ongoing
         amount: "{{RAI_A_MINT_RATE_PER_DAY}} RATE/day"
         name: RAI-A TAI
         image: "{{TAI_ICON}}" 
         description: Mint TAI from RAI-A Safe
-        link: https://goerli-app.tai.money
+        link: https://app.tai.money
         apy: "{{RAI_A_MINT_APR}}%"
         apy_title: "RAI-A RATE APR"
         apy_description: "Assumes c-ratio of {{RAI_A_CRATIO}}% for APR calculation."
