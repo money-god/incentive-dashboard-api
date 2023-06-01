@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@money-god/geb-admin": "^1.2.1",
+    "@money-god/geb-contract-api": "^1.2.1",
     "axios": "^0.20.0",
     "d": "^1.0.1",
     "ethers": "^5.0.14",

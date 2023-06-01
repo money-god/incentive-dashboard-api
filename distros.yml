@@ -93,7 +93,7 @@ rounds:
         link: https://app.tai.money
         apy: "{{CBETH_A_MINT_APR}}%"
         apy_title: "CBETH-A RATE APR"
-        apy_description: "Assumes c-ratio of {{RcbETH_A_CRATIO}}% for APR calculation."
+        apy_description: "Assumes c-ratio of {{CBETH_A_CRATIO}}% for APR calculation."
 
       - until: Ongoing
         amount: "{{CBETH_B_MINT_RATE_PER_DAY}} RATE/day"

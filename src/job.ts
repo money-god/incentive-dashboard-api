@@ -13,6 +13,7 @@ import JSBI from 'jsbi'
 import { BigNumber, ethers } from "ethers";
 import { GebAdmin } from "@money-god/geb-admin";
 import { utils } from "@money-god/geb-admin";
+import { UniswapV3Pool } from "@money-god/geb-contract-api";
 import { DynamoDB } from "aws-sdk";
 
 import invariant from 'tiny-invariant'
@@ -106,17 +107,12 @@ export const createDoc = async (): Promise<Document> => {
   const gebAdmin = new GebAdmin("mainnet", provider);
   const rawDoc = require("../distros.yml");
   const valuesMap = new Map<string, string>();
-  const rateUsd = 5
+  //const rateUsd = 5
+  const rateWethPool = new UniswapV3Pool('0x59262eeac376f4b29f21bfb375628f3312943338', gebAdmin.provider)   
 
-  /*
-   * 
-   * Mint APR 
-   * 
-   */
-
+  // Mint APR
   const debtRewardsRequest = gebAdmin.contracts.debtRewards.rewardRate(true);
   const liqRewardsRequest = gebAdmin.contracts.liquidityRewards.rewardRate(true);
-
   const ethARequest = gebAdmin.contracts.oracleRelayer.collateralTypes(utils.ETH_A, true);
   const ethBRequest = gebAdmin.contracts.oracleRelayer.collateralTypes(utils.ETH_B, true);
   const ethCRequest = gebAdmin.contracts.oracleRelayer.collateralTypes(utils.ETH_C, true);
@@ -166,6 +162,9 @@ export const createDoc = async (): Promise<Document> => {
   const redemptionPrice = bigNumberToNumber(await gebAdmin.contracts.oracleRelayer.redemptionPrice_readOnly()) / 1e27;
   const globalDebt = bigNumberToNumber(await gebAdmin.contracts.safeEngine.globalDebt()) / 1e45;
 
+  const v3RateSlotRequest = rateWethPool.slot0(true);
+  v3RateSlotRequest.to = rateWethPool.address
+
   // @ts-ignore
   const multicall = gebAdmin.multiCall([
     ethARequest, // 0
@@ -190,6 +189,7 @@ export const createDoc = async (): Promise<Document> => {
     cbethBRequest, // 19
     cbethADebtRequest, // 20
     cbethBDebtRequest, // 21
+    v3RateSlotRequest, // 22
   ]) as any[];
 
   // == Execute all promises ==
@@ -197,7 +197,6 @@ export const createDoc = async (): Promise<Document> => {
     multicall,
     coinGeckoPrice(["ethereum", "wrapped-steth", "rocket-pool-eth", "rai", "coinbase-wrapped-staked-eth"])
   ]);
-  process.exit(1)
 
   const ethPrice = multiCallData[1][0]  
   const wstethPrice = multiCallData[1][1]  
@@ -241,6 +240,13 @@ export const createDoc = async (): Promise<Document> => {
   const raiADebt = multiCallData[0][16].debtAmount/1e18
   const cbethADebt = multiCallData[0][20].debtAmount/1e18
   const cbethBDebt = multiCallData[0][21].debtAmount/1e18
+  const v3RateSlot = multiCallData[0][22]  
+
+  const sqrtPriceX96Rate = v3RateSlot.sqrtPriceX96
+  const rateWethPrice = JSBI.BigInt(sqrtPriceX96Rate * (1e18)/(1e18)) ** 2 / JSBI.BigInt(2) ** (JSBI.BigInt(192));
+  const rateUsd = rateWethPrice * ethPrice
+  console.log(rateUsd)
+  process.exit(0)
 
   const ratePerDebtPerYear = blockRateToYearlyRate(debtRewardsRate)
   const ratePerDebtPerDay = blockRateToDailyRate(debtRewardsRate)
@@ -281,11 +287,7 @@ export const createDoc = async (): Promise<Document> => {
   const cbethAAPR = cbethADebtUsed * ratePerDebtPerYear * rateUsd / cbethPrice
   const cbethBAPR = cbethBDebtUsed * ratePerDebtPerYear * rateUsd / cbethPrice
 
-  /*
-   * 
-   * LP APR 
-   * 
-   */
+  // LP APR
   const [tickLower, tickUpper] = [-887220, 887220]
   const positionTypes = ['address','int24','int24']
   const positionValues = [gebAdmin.contracts.bunniHub.address, tickLower, tickUpper]
@@ -293,9 +295,11 @@ export const createDoc = async (): Promise<Document> => {
   const v3SlotRequest = gebAdmin.contracts.uniswapV3PairCoinEth.slot0(true);
   const bunniTokenRequest = gebAdmin.contracts.bunniToken.totalSupply(true);
 
+
   v3PoolRequest.to = gebAdmin.contracts.uniswapV3PairCoinEth.address
   v3SlotRequest.to = gebAdmin.contracts.uniswapV3PairCoinEth.address
   bunniTokenRequest.to = gebAdmin.contracts.bunniToken.address 
+
   // @ts-ignore
   const multicall1 = gebAdmin.multiCall([
     v3PoolRequest, // 0
