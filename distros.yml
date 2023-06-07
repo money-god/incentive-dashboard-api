@@ -2,6 +2,7 @@ rounds:
   - number: 0
     name: Current TAI Rewards
     rate_usd: "{{RATE_USD}}"
+    rate_circulating_supply: "{{RATE_CIRCULATING_SUPPLY}}"
     distros:
 
         # LP
