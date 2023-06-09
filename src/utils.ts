@@ -92,5 +92,10 @@ export interface Round {
 }
 
 export interface Document {
-  rounds: Round[];
+  name: string;
+  image: string;
+  distros: Distro[];
+  snapshotDate: string;
+  distributionDate: string;
+  starMessage?: string;
 }

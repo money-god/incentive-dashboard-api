@@ -1,6 +1,4 @@
-rounds:
-  - number: 0
-    name: Current TAI Rewards
+    name: "Data about TAI protocol"
     rate_usd: "{{RATE_USD}}"
     rate_circulating_supply: "{{RATE_CIRCULATING_SUPPLY}}"
     distros:
@@ -115,13 +113,3 @@ rounds:
         apy: "{{RAI_A_MINT_APR}}%"
         apy_title: "RAI-A RATE APR"
         apy_description: "Assumes c-ratio of {{RAI_A_CRATIO}}% for APR calculation."
-
-
-  # Other rounds...
-  # - number: 3
-  #   name: Round 3
-  #   snapshotDate: 2021-06-17T12:50Z
-  #   distributionDate: 2021-06-22
-  #   starMessage: "* Ruler rewards will be distributed by the Ruler team"  
-  #   distros: []
-      

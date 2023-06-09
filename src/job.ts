@@ -303,7 +303,6 @@ export const createDoc = async (): Promise<Document> => {
   const rethBDebtUsed =  rethPrice / (rethBLR/1e27) / redemptionPrice
   const raiADebtUsed =  raiPrice / (raiALR/1e27) / redemptionPrice
   const cbethADebtUsed =  cbethPrice / (cbethALR/1e27) / redemptionPrice
-  console.log(cbethPrice , cbethALR, redemptionPrice)
   const cbethBDebtUsed =  cbethPrice / (cbethBLR/1e27) / redemptionPrice
 
   // APRs for minting
@@ -317,8 +316,6 @@ export const createDoc = async (): Promise<Document> => {
   const raiAAPR = raiADebtUsed * ratePerDebtPerYear * rateUsd / raiPrice
   const cbethAAPR = cbethADebtUsed * ratePerDebtPerYear * rateUsd / cbethPrice
   const cbethBAPR = cbethBDebtUsed * ratePerDebtPerYear * rateUsd / cbethPrice
-
-  console.log(cbethADebtUsed , ratePerDebtPerYear , rateUsd , cbethPrice)
 
   // LP APR
   const [tickLower, tickUpper] = [-887220, 887220]
