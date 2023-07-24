@@ -1,0 +1,25 @@
+    name: "TAI Rewards"
+    rate_usd: "{{RATE_USD}}"
+    rate_circulating_supply: "{{RATE_CIRCULATING_SUPPLY}}"
+    distros:
+
+        # LP
+      - until: Ongoing
+        amount: "{{LP_RATE_PER_DAY}} RATE/day"
+        name: TAI/ETH LP
+        image: https://images.ctfassets.net/zql9qw49kkiw/gODeJOOfrFIXz5pGXkNVO/df191e8900a2e9c9c868344b874c09ea/uniswap.svg
+        description: LP in the TAI/ETH Pool.
+        link: LP Link
+        apy: "{{LP_RATE_PER_DAY}} RATE/day"
+        apy_title: "Amount"
+        apy_description: "Amount of total RATE distributed to LPs each day"
+
+      - until: Ongoing
+        amount: "{{TOTAL_MINT_RATE_PER_DAY}} RATE/day"
+        name: TAI Mint
+        image: "{{TAI_ICON}}" 
+        description: Mint TAI from any Safe
+        link: https://app.tai.money
+        apy: "{{TOTAL_MINT_RATE_PER_DAY}} RATE/day"
+        apy_title: "Amount"
+        apy_description: "Amount of total RATE distributed to minters each day"
