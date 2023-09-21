@@ -105,7 +105,7 @@ function getSqrtRatioAtTick(tick: number): JSBI {
 export const createDoc = async (): Promise<Document> => {
   const provider = new ethers.providers.StaticJsonRpcProvider(process.env.ETH_RPC);
   const gebAdmin = new GebAdmin("mainnet", provider);
-  const rawDoc = require("../distros.yml");
+  const rawDoc = require("../distros_count.yml");
   const valuesMap = new Map<string, string>();
   //const rateUsd = 5
   const rateWethPool = new UniswapV3Pool('0x59262eeac376f4b29f21bfb375628f3312943338', gebAdmin.provider);
@@ -116,7 +116,7 @@ export const createDoc = async (): Promise<Document> => {
   const rewardsLeft = await(gebAdmin.contracts.protEmitter.startingSupplyMonths(lastMonthDistributed + 1)) / 1e18;
   const rewardsCirculating = rewardsStart - rewardsLeft;
 
-  var teamStreams = [105236, 105237, 105238, 105239, 105240];
+  var teamStreams = [105236, 105237, 105238, 105240];
   var teamStreamsRequests = [];  
   for (var i = 0; i < teamStreams.length; i++) {
     var streamReq = gebAdmin.contracts.sablier.getStream(teamStreams[i], true)
@@ -128,7 +128,6 @@ export const createDoc = async (): Promise<Document> => {
   const multiCallStreamsData = await Promise.all([
     multicallStreams
   ]);
-
 
   var teamStreamed = 0
   const now = Date.now()/1000
@@ -293,6 +292,8 @@ export const createDoc = async (): Promise<Document> => {
   const cbethADailyRate = cbethADebt * ratePerDebtPerDay  
   const cbethBDailyRate = cbethBDebt * ratePerDebtPerDay  
 
+  const totalMintDailyRate = ethADailyRate + ethBDailyRate + ethCDailyRate + wstethADailyRate + wstethBDailyRate + rethADailyRate  + rethBDailyRate  + raiADailyRate + cbethADailyRate + cbethBDailyRate;  
+
   // amount of debt at c-ratio = 2 * liq-ratio
   const ethADebtUsed =  ethPrice / (ethALR/1e27) / redemptionPrice
   const ethBDebtUsed =  ethPrice / (ethBLR/1e27) / redemptionPrice
@@ -367,7 +368,7 @@ export const createDoc = async (): Promise<Document> => {
   // APR for LPing 
   const LPAPR = ratePerLPPerYear * rateUsd / redemptionPrice
 
-  valuesMap.set("RATE_USD", rateUsd);
+  valuesMap.set("RATE_USD", nFormatter(rateUsd, 2));
   valuesMap.set("RATE_CIRCULATING_SUPPLY", rateCirculatingSupply);
   valuesMap.set("ETH_A_CRATIO", Math.round(ethACratio));
   valuesMap.set("ETH_B_CRATIO", Math.round(ethBCratio));
@@ -390,6 +391,7 @@ export const createDoc = async (): Promise<Document> => {
   valuesMap.set("RAI_A_MINT_RATE_PER_DAY", nFormatter(raiADailyRate, 2));
   valuesMap.set("CBETH_A_MINT_RATE_PER_DAY", nFormatter(cbethADailyRate, 2));
   valuesMap.set("CBETH_B_MINT_RATE_PER_DAY", nFormatter(cbethBDailyRate, 2));
+  valuesMap.set("TOTAL_MINT_RATE_PER_DAY", Math.round(totalMintDailyRate));
 
   valuesMap.set("ETH_A_MINT_APR", nFormatter(formatPercent(ethAAPR * 100),  2));
   valuesMap.set("ETH_B_MINT_APR", nFormatter(formatPercent(ethBAPR * 100),  2));
