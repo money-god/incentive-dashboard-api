@@ -1,6 +1,8 @@
     name: "TAI Rewards"
     rate_usd: "{{RATE_USD}}"
     rate_circulating_supply: "{{RATE_CIRCULATING_SUPPLY}}"
+    tai_redemption_price: "{{TAI_REDEMPTION_PRICE}}"
+    tai_redemption_rate: "{{TAI_REDEMPTION_RATE}}"
     distros:
 
         # LP

@@ -116,7 +116,7 @@ export const createDoc = async (): Promise<Document> => {
   const rewardsLeft = await(gebAdmin.contracts.protEmitter.startingSupplyMonths(lastMonthDistributed + 1)) / 1e18;
   const rewardsCirculating = rewardsStart - rewardsLeft;
 
-  var teamStreams = [105236, 105237, 105238, 105240];
+  var teamStreams = [105236, 105237, 105238, 105240, 105380, 105379];
   var teamStreamsRequests = [];  
   for (var i = 0; i < teamStreams.length; i++) {
     var streamReq = gebAdmin.contracts.sablier.getStream(teamStreams[i], true)
@@ -191,6 +191,8 @@ export const createDoc = async (): Promise<Document> => {
   raiADebtRequest.to = gebAdmin.contracts.safeEngine.address
 
   const redemptionPrice = bigNumberToNumber(await gebAdmin.contracts.oracleRelayer.redemptionPrice_readOnly()) / 1e27;
+  const redemptionRate = await gebAdmin.contracts.oracleRelayer.redemptionRate() / 1e27;
+  const redemptionRateAnnual = (redemptionRate ** (86400 * 365)  - 1) * 100
   const globalDebt = bigNumberToNumber(await gebAdmin.contracts.safeEngine.globalDebt()) / 1e45;
 
   const v3RateSlotRequest = rateWethPool.slot0(true);
@@ -370,6 +372,8 @@ export const createDoc = async (): Promise<Document> => {
 
   valuesMap.set("RATE_USD", nFormatter(rateUsd, 2));
   valuesMap.set("RATE_CIRCULATING_SUPPLY", rateCirculatingSupply);
+  valuesMap.set("TAI_REDEMPTION_PRICE", nFormatter(redemptionPrice, 4));
+  valuesMap.set("TAI_REDEMPTION_RATE", nFormatter(redemptionRateAnnual, 2));
   valuesMap.set("ETH_A_CRATIO", Math.round(ethACratio));
   valuesMap.set("ETH_B_CRATIO", Math.round(ethBCratio));
   valuesMap.set("ETH_C_CRATIO", Math.round(ethCCratio));
@@ -404,7 +408,7 @@ export const createDoc = async (): Promise<Document> => {
   valuesMap.set("CBETH_A_MINT_APR", nFormatter(formatPercent(cbethAAPR * 100),  2));
   valuesMap.set("CBETH_B_MINT_APR", nFormatter(formatPercent(cbethBAPR * 100),  2));
 
-  valuesMap.set("LP_RATE_PER_DAY", nFormatter(LPDailyRate, 2));
+  valuesMap.set("LP_RATE_PER_DAY", Math.round(LPDailyRate));
   valuesMap.set("LP_APR", nFormatter(formatPercent(lpAPR),  2));
 
   valuesMap.set("TAI_ICON", "https://ipfs.io/ipfs/QmYUysarFEGha5neVCmShtMBcpNqtgjYfauwhuot1Zk9i3?filename=tai.png")
