@@ -105,10 +105,16 @@ function getSqrtRatioAtTick(tick: number): JSBI {
 export const createDoc = async (): Promise<Document> => {
   const provider = new ethers.providers.StaticJsonRpcProvider(process.env.ETH_RPC);
   const gebAdmin = new GebAdmin("mainnet", provider);
-  const rawDoc = require("../distros_count.yml");
+  //const rawDoc = require("../distros_count.yml");
+  const rawDoc = require("../distros.yml");
   const valuesMap = new Map<string, string>();
   //const rateUsd = 5
   const rateWethPool = new UniswapV3Pool('0x59262eeac376f4b29f21bfb375628f3312943338', gebAdmin.provider);
+
+  // TAI/USD TWAP
+  //const [taiUsd, valid] = await(gebAdmin.contracts.medianizerTai.getResultWithValidity());
+  const taiUsdResult = await(gebAdmin.contracts.medianizerTai.getResultWithValidity());
+  const marketPrice = bigNumberToNumber(taiUsdResult[0]) / 1e18; 
 
   // Circulating RATE supply
   const rewardsStart = 780000
@@ -154,6 +160,7 @@ export const createDoc = async (): Promise<Document> => {
   const cbethARequest = gebAdmin.contracts.oracleRelayer.collateralTypes(utils.CBETH_A, true);
   const cbethBRequest = gebAdmin.contracts.oracleRelayer.collateralTypes(utils.CBETH_B, true);
   const raiARequest = gebAdmin.contracts.oracleRelayer.collateralTypes(utils.RAI_A, true);
+  const woethARequest = gebAdmin.contracts.oracleRelayer.collateralTypes(utils.WOETH_A, true);
 
   debtRewardsRequest.to = gebAdmin.contracts.debtRewards.address
   liqRewardsRequest.to = gebAdmin.contracts.liquidityRewards.address
@@ -167,6 +174,7 @@ export const createDoc = async (): Promise<Document> => {
   cbethARequest.to = gebAdmin.contracts.oracleRelayer.address
   cbethBRequest.to = gebAdmin.contracts.oracleRelayer.address
   raiARequest.to = gebAdmin.contracts.oracleRelayer.address
+  woethARequest.to = gebAdmin.contracts.oracleRelayer.address
 
   const ethADebtRequest = gebAdmin.contracts.safeEngine.collateralTypes(utils.ETH_A, true);
   const ethBDebtRequest = gebAdmin.contracts.safeEngine.collateralTypes(utils.ETH_B, true);
@@ -178,6 +186,7 @@ export const createDoc = async (): Promise<Document> => {
   const cbethADebtRequest = gebAdmin.contracts.safeEngine.collateralTypes(utils.CBETH_A, true);
   const cbethBDebtRequest = gebAdmin.contracts.safeEngine.collateralTypes(utils.CBETH_B, true);
   const raiADebtRequest = gebAdmin.contracts.safeEngine.collateralTypes(utils.RAI_A, true);
+  const woethADebtRequest = gebAdmin.contracts.safeEngine.collateralTypes(utils.WOETH_A, true);
 
   ethADebtRequest.to = gebAdmin.contracts.safeEngine.address
   ethBDebtRequest.to = gebAdmin.contracts.safeEngine.address
@@ -189,6 +198,7 @@ export const createDoc = async (): Promise<Document> => {
   cbethADebtRequest.to = gebAdmin.contracts.safeEngine.address
   cbethBDebtRequest.to = gebAdmin.contracts.safeEngine.address
   raiADebtRequest.to = gebAdmin.contracts.safeEngine.address
+  woethADebtRequest.to = gebAdmin.contracts.safeEngine.address
 
   const redemptionPrice = bigNumberToNumber(await gebAdmin.contracts.oracleRelayer.redemptionPrice_readOnly()) / 1e27;
   const redemptionRate = await gebAdmin.contracts.oracleRelayer.redemptionRate() / 1e27;
@@ -223,12 +233,14 @@ export const createDoc = async (): Promise<Document> => {
     cbethADebtRequest, // 20
     cbethBDebtRequest, // 21
     v3RateSlotRequest, // 22
+    woethARequest, // 23
+    woethADebtRequest, // 24
   ]) as any[];
 
   // == Execute all promises ==
   const multiCallData = await Promise.all([
     multicall,
-    coinGeckoPrice(["ethereum", "wrapped-steth", "rocket-pool-eth", "rai", "coinbase-wrapped-staked-eth"])
+    coinGeckoPrice(["ethereum", "wrapped-steth", "rocket-pool-eth", "rai", "coinbase-wrapped-staked-eth", "wrapped-oeth"])
   ]);
 
   const ethPrice = multiCallData[1][0]  
@@ -236,6 +248,7 @@ export const createDoc = async (): Promise<Document> => {
   const rethPrice = multiCallData[1][2]  
   const raiPrice = multiCallData[1][3]  
   const cbethPrice = multiCallData[1][4]  
+  const woethPrice = multiCallData[1][5]  
 
   const ethALR = multiCallData[0][0].liquidationCRatio
   const ethBLR = multiCallData[0][1].liquidationCRatio
@@ -247,6 +260,7 @@ export const createDoc = async (): Promise<Document> => {
   const raiALR = multiCallData[0][7].liquidationCRatio
   const cbethALR = multiCallData[0][18].liquidationCRatio
   const cbethBLR = multiCallData[0][19].liquidationCRatio
+  const woethALR = multiCallData[0][23].liquidationCRatio
 
   // Use 2 * liq-ratio for APR calculations
   const ethACratio = 2 * ethALR/1e27 * 100
@@ -259,6 +273,7 @@ export const createDoc = async (): Promise<Document> => {
   const raiACratio = 2 * raiALR/1e27 * 100
   const cbethACratio = 2 * cbethALR/1e27 * 100
   const cbethBCratio = 2 * cbethBLR/1e27 * 100
+  const woethACratio = 2 * woethALR/1e27 * 100
 
   const debtRewardsRate = multiCallData[0][8]/1e18 // Rate per debt per block
   const liqRewardsRate = multiCallData[0][17]/1e18 // Rate per TAI per block
@@ -274,6 +289,7 @@ export const createDoc = async (): Promise<Document> => {
   const cbethADebt = multiCallData[0][20].debtAmount/1e18
   const cbethBDebt = multiCallData[0][21].debtAmount/1e18
   const v3RateSlot = multiCallData[0][22]  
+  const woethADebt = multiCallData[0][24].debtAmount/1e18
 
   const sqrtPriceX96Rate = v3RateSlot.sqrtPriceX96
   const rateWethPrice = JSBI.BigInt(sqrtPriceX96Rate * (1e18)/(1e18)) ** 2 / JSBI.BigInt(2) ** (JSBI.BigInt(192));
@@ -293,8 +309,9 @@ export const createDoc = async (): Promise<Document> => {
   const raiADailyRate = raiADebt * ratePerDebtPerDay  
   const cbethADailyRate = cbethADebt * ratePerDebtPerDay  
   const cbethBDailyRate = cbethBDebt * ratePerDebtPerDay  
+  const woethADailyRate = woethADebt * ratePerDebtPerDay  
 
-  const totalMintDailyRate = ethADailyRate + ethBDailyRate + ethCDailyRate + wstethADailyRate + wstethBDailyRate + rethADailyRate  + rethBDailyRate  + raiADailyRate + cbethADailyRate + cbethBDailyRate;  
+  const totalMintDailyRate = ethADailyRate + ethBDailyRate + ethCDailyRate + wstethADailyRate + wstethBDailyRate + rethADailyRate  + rethBDailyRate  + raiADailyRate + cbethADailyRate + cbethBDailyRate + woethADailyRate;  
 
   // amount of debt at c-ratio = 2 * liq-ratio
   const ethADebtUsed =  ethPrice / (ethALR/1e27) / redemptionPrice
@@ -307,6 +324,7 @@ export const createDoc = async (): Promise<Document> => {
   const raiADebtUsed =  raiPrice / (raiALR/1e27) / redemptionPrice
   const cbethADebtUsed =  cbethPrice / (cbethALR/1e27) / redemptionPrice
   const cbethBDebtUsed =  cbethPrice / (cbethBLR/1e27) / redemptionPrice
+  const woethADebtUsed =  woethPrice / (woethALR/1e27) / redemptionPrice
 
   // APRs for minting
   const ethAAPR = ethADebtUsed * ratePerDebtPerYear * rateUsd / ethPrice
@@ -319,6 +337,7 @@ export const createDoc = async (): Promise<Document> => {
   const raiAAPR = raiADebtUsed * ratePerDebtPerYear * rateUsd / raiPrice
   const cbethAAPR = cbethADebtUsed * ratePerDebtPerYear * rateUsd / cbethPrice
   const cbethBAPR = cbethBDebtUsed * ratePerDebtPerYear * rateUsd / cbethPrice
+  const woethAAPR = woethADebtUsed * ratePerDebtPerYear * rateUsd / woethPrice
 
   // LP APR
   const [tickLower, tickUpper] = [-887220, 887220]
@@ -327,7 +346,6 @@ export const createDoc = async (): Promise<Document> => {
   const v3PoolRequest = gebAdmin.contracts.uniswapV3PairCoinEth.positions(ethers.utils.solidityKeccak256(positionTypes, positionValues), true);
   const v3SlotRequest = gebAdmin.contracts.uniswapV3PairCoinEth.slot0(true);
   const bunniTokenRequest = gebAdmin.contracts.bunniToken.totalSupply(true);
-
 
   v3PoolRequest.to = gebAdmin.contracts.uniswapV3PairCoinEth.address
   v3SlotRequest.to = gebAdmin.contracts.uniswapV3PairCoinEth.address
@@ -369,11 +387,13 @@ export const createDoc = async (): Promise<Document> => {
 
   // APR for LPing 
   const LPAPR = ratePerLPPerYear * rateUsd / redemptionPrice
-
+  console.log(typeof marketPrice);
+  console.log(typeof redemptionPrice);
   valuesMap.set("RATE_USD", nFormatter(rateUsd, 2));
   valuesMap.set("RATE_CIRCULATING_SUPPLY", rateCirculatingSupply);
-  valuesMap.set("TAI_REDEMPTION_PRICE", nFormatter(redemptionPrice, 4));
-  valuesMap.set("TAI_REDEMPTION_RATE", nFormatter(redemptionRateAnnual, 2));
+  valuesMap.set("TAI_MARKET_PRICE", marketPrice.toFixed(6));
+  valuesMap.set("TAI_REDEMPTION_PRICE", nFormatter(redemptionPrice, 6));
+  valuesMap.set("TAI_REDEMPTION_RATE", redemptionRateAnnual.toFixed(2));
   valuesMap.set("ETH_A_CRATIO", Math.round(ethACratio));
   valuesMap.set("ETH_B_CRATIO", Math.round(ethBCratio));
   valuesMap.set("ETH_C_CRATIO", Math.round(ethCCratio));
@@ -384,6 +404,7 @@ export const createDoc = async (): Promise<Document> => {
   valuesMap.set("RAI_A_CRATIO", Math.round(raiACratio));
   valuesMap.set("CBETH_A_CRATIO", Math.round(cbethACratio));
   valuesMap.set("CBETH_B_CRATIO", Math.round(cbethBCratio));
+  valuesMap.set("WOETH_A_CRATIO", Math.round(woethACratio));
 
   valuesMap.set("ETH_A_MINT_RATE_PER_DAY", nFormatter(ethADailyRate, 2));
   valuesMap.set("ETH_B_MINT_RATE_PER_DAY", nFormatter(ethBDailyRate, 2));
@@ -395,6 +416,7 @@ export const createDoc = async (): Promise<Document> => {
   valuesMap.set("RAI_A_MINT_RATE_PER_DAY", nFormatter(raiADailyRate, 2));
   valuesMap.set("CBETH_A_MINT_RATE_PER_DAY", nFormatter(cbethADailyRate, 2));
   valuesMap.set("CBETH_B_MINT_RATE_PER_DAY", nFormatter(cbethBDailyRate, 2));
+  valuesMap.set("WOETH_A_MINT_RATE_PER_DAY", nFormatter(woethADailyRate, 2));
   valuesMap.set("TOTAL_MINT_RATE_PER_DAY", Math.round(totalMintDailyRate));
 
   valuesMap.set("ETH_A_MINT_APR", nFormatter(formatPercent(ethAAPR * 100),  2));
@@ -407,6 +429,7 @@ export const createDoc = async (): Promise<Document> => {
   valuesMap.set("RAI_A_MINT_APR", nFormatter(formatPercent(raiAAPR * 100),  2));
   valuesMap.set("CBETH_A_MINT_APR", nFormatter(formatPercent(cbethAAPR * 100),  2));
   valuesMap.set("CBETH_B_MINT_APR", nFormatter(formatPercent(cbethBAPR * 100),  2));
+  valuesMap.set("WOETH_A_MINT_APR", nFormatter(formatPercent(woethAAPR * 100),  2));
 
   valuesMap.set("LP_RATE_PER_DAY", Math.round(LPDailyRate));
   valuesMap.set("LP_APR", nFormatter(formatPercent(lpAPR),  2));

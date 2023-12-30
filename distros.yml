@@ -1,6 +1,9 @@
     name: "Data about TAI protocol"
     rate_usd: "{{RATE_USD}}"
     rate_circulating_supply: "{{RATE_CIRCULATING_SUPPLY}}"
+    tai_market_price: "{{TAI_MARKET_PRICE}}"
+    tai_redemption_price: "{{TAI_REDEMPTION_PRICE}}"
+    tai_redemption_rate: "{{TAI_REDEMPTION_RATE}}"
     distros:
 
         # LP
@@ -103,6 +106,16 @@
         apy: "{{CBETH_B_MINT_APR}}%"
         apy_title: "CBETH-B RATE APR"
         apy_description: "Assumes c-ratio of {{CBETH_B_CRATIO}}% for APR calculation."
+
+      - until: Ongoing
+        amount: "{{WOETH_A_MINT_RATE_PER_DAY}} RATE/day"
+        name: WOETH-A TAI
+        image: "{{TAI_ICON}}" 
+        description: Mint TAI from WOETH-A Safe
+        link: https://app.tai.money
+        apy: "{{WOETH_A_MINT_APR}}%"
+        apy_title: "WOETH-A RATE APR"
+        apy_description: "Assumes c-ratio of {{WOETH_A_CRATIO}}% for APR calculation."
 
       - until: Ongoing
         amount: "{{RAI_A_MINT_RATE_PER_DAY}} RATE/day"
