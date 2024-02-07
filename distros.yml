@@ -18,6 +18,16 @@
         apy_description: "Cost basis is the total value of TAI and ETH added to the TAI/ETH pool."
 
       - until: Ongoing
+        amount: ""
+        name: LP in Balancer and AURA
+        image: https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xC0c293ce456fF0ED870ADd98a0828Dd4d2903DBF/logo.png
+        description: LP RATE/ETH in <a href="https://app.balancer.fi/#/ethereum/pool/0x759fabc513accd292ada967c4dd7bb94da39232e0002000000000000000005a8">Balancer</a> RATE/ETH, then LP BPT in <a href="https://app.aura.finance/#/1/pool/146">Aura</a>
+        link: https://app.aura.finance/#/1/pool/146
+        apy: "{{AURA_APR}}%"
+        apy_title: "BAL/AURA APR"
+        apy_description: "APR in BAL and AURA tokens"
+
+      - until: Ongoing
         amount: "{{ETH_A_MINT_RATE_PER_DAY}} RATE/day"
         name: ETH-A TAI
         image: "{{TAI_ICON}}" 

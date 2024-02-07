@@ -1,6 +1,7 @@
 import {
   bigNumberToNumber,
   coinGeckoPrice,
+  auraApr,
   Document,
   DOCUMENT_KEY,
   DYNAMODB_TABLE,
@@ -240,7 +241,8 @@ export const createDoc = async (): Promise<Document> => {
   // == Execute all promises ==
   const multiCallData = await Promise.all([
     multicall,
-    coinGeckoPrice(["ethereum", "wrapped-steth", "rocket-pool-eth", "rai", "coinbase-wrapped-staked-eth", "wrapped-oeth"])
+    coinGeckoPrice(["ethereum", "wrapped-steth", "rocket-pool-eth", "rai", "coinbase-wrapped-staked-eth", "wrapped-oeth"]),
+    auraApr()
   ]);
 
   const ethPrice = multiCallData[1][0]  
@@ -249,6 +251,7 @@ export const createDoc = async (): Promise<Document> => {
   const raiPrice = multiCallData[1][3]  
   const cbethPrice = multiCallData[1][4]  
   const woethPrice = multiCallData[1][5]  
+  const aura = multiCallData[2]
 
   const ethALR = multiCallData[0][0].liquidationCRatio
   const ethBLR = multiCallData[0][1].liquidationCRatio
@@ -394,6 +397,7 @@ export const createDoc = async (): Promise<Document> => {
   valuesMap.set("TAI_MARKET_PRICE", marketPrice.toFixed(6));
   valuesMap.set("TAI_REDEMPTION_PRICE", nFormatter(redemptionPrice, 6));
   valuesMap.set("TAI_REDEMPTION_RATE", redemptionRateAnnual.toFixed(2));
+  valuesMap.set("AURA_APR", aura);
   valuesMap.set("ETH_A_CRATIO", Math.round(ethACratio));
   valuesMap.set("ETH_B_CRATIO", Math.round(ethBCratio));
   valuesMap.set("ETH_C_CRATIO", Math.round(ethCCratio));

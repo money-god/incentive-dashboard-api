@@ -15,6 +15,34 @@ export const coinGeckoPrice = async (id: string[]) => {
   })
 };
 
+export const auraApr = async () => {
+  const query = `{
+  pool(id: "146", chainId:1) {
+    name
+    aprs {
+      total
+      projectedTotal
+      breakdown {
+        name
+        value
+      }
+      projectedBreakdown {
+        name
+        value
+      }
+    }
+  }
+  }
+  `
+  const res = await Axios.post(
+    'https://data.aura.finance/graphql', {'query': query}
+  );
+
+  console.log(res.data.data.pool.aprs.total as number)
+  return res.data.data.pool.aprs.total as number;   
+
+};
+
 export const bigNumberToNumber = (bn: BigNumber) => parseInt(bn.toString());
 
 export const formatPercent = (number: number) => number.toFixed(2);
